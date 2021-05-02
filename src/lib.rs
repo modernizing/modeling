@@ -17,19 +17,45 @@ pub mod ctags;
 pub mod plantuml;
 pub mod coco_struct;
 
-
+/// Returns Vec<ClassInfo> with the given path.
+///
+/// # Arguments
+///
+/// * `path` - CODE PATH
+///
+/// # Examples
+///
+/// ```
+/// use modeling::{by_dir, PlantUmlRender};
+///
+/// let classes = by_dir("src/");
+/// let puml = PlantUmlRender::render(&classes);
+/// ```
 pub fn by_dir<P: AsRef<Path>>(path: P) -> Vec<ClassInfo> {
     let origin_files = files_from_path(path);
 
     by_files(origin_files)
 }
 
-pub fn by_files(origin_files: Vec<String>) -> Vec<ClassInfo> {
-    let thread = count_thread(&origin_files);
+/// Returns Vec<ClassInfo> with the given files.
+///
+/// # Arguments
+///
+/// * `files` - code files in string
+///
+/// # Examples
+///
+/// ```
+/// use modeling::{by_files, PlantUmlRender};
+///
+/// let classes = by_files(files);
+/// let puml = PlantUmlRender::render(&classes);
+/// ```
+pub fn by_files(files: Vec<String>) -> Vec<ClassInfo> {
+    let thread = count_thread(&files);
     let opt = build_opt(thread);
 
-    let files = files_by_thread(origin_files, &opt);
-    run_ctags(&opt, &files)
+    run_ctags(&opt, &files_by_thread(files, &opt))
 }
 
 fn count_thread(origin_files: &Vec<String>) -> usize {

@@ -5,6 +5,7 @@ pub trait PlantUml {
     fn render(&self) -> String;
 }
 
+/// Render classes info to string
 pub struct PlantUmlRender;
 
 impl PlantUmlRender {
