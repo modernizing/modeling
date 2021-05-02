@@ -11,17 +11,17 @@ pub use ctags::ctags_cmd::CmdCtags;
 pub use ctags::ctags_opt::Opt;
 pub use ctags::ctags_parser::CtagsParser;
 pub use plantuml::plantuml_render::PlantUmlRender;
+use std::path::Path;
 
 pub mod ctags;
 pub mod plantuml;
 pub mod coco_struct;
 
 
-pub fn analysis_by_dir(url_str: &str) -> Vec<ClassInfo> {
-    let origin_files = files_from_path(url_str);
-    let classes = by_files(origin_files);
+pub fn by_dir<P: AsRef<Path>>(path: P) -> Vec<ClassInfo> {
+    let origin_files = files_from_path(path);
 
-    classes
+    by_files(origin_files)
 }
 
 pub fn by_files(origin_files: Vec<String>) -> Vec<ClassInfo> {
@@ -29,8 +29,7 @@ pub fn by_files(origin_files: Vec<String>) -> Vec<ClassInfo> {
     let opt = build_opt(thread);
 
     let files = files_by_thread(origin_files, &opt);
-    let classes = run_ctags(&opt, &files);
-    classes
+    run_ctags(&opt, &files)
 }
 
 fn count_thread(origin_files: &Vec<String>) -> usize {
@@ -60,7 +59,7 @@ fn run_ctags(opt: &Opt, files: &Vec<String>) -> Vec<ClassInfo> {
     classes
 }
 
-fn files_from_path(path: &str) -> Vec<String> {
+fn files_from_path<P: AsRef<Path>>(path: P) -> Vec<String> {
     let mut origin_files = vec![];
     for result in Walk::new(path) {
         if let Ok(entry) = result {
@@ -92,7 +91,7 @@ fn build_opt(thread: usize) -> Opt {
 #[cfg(test)]
 mod tests {
     use std::path::PathBuf;
-    use crate::{analysis_by_dir, PlantUmlRender};
+    use crate::{by_dir, PlantUmlRender};
 
     pub fn ctags_fixtures_dir() -> PathBuf {
         let root_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -107,7 +106,7 @@ mod tests {
     #[test]
     fn should_run_struct_analysis() {
         let path = format!("{}", ctags_fixtures_dir().display());
-        let vec = analysis_by_dir(path.as_str());
+        let vec = by_dir(path.as_str());
         let result = PlantUmlRender::render(&vec);
 
         println!("{}", result);
