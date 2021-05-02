@@ -1,6 +1,6 @@
 use crate::coco_struct::ClassInfo;
 use std::collections::HashMap;
-use crate::render::plantuml_render::{PlantUmlRender};
+use crate::render::{render_member, render_method};
 
 /// Render classes info to string
 pub struct MermaidRender;
@@ -18,8 +18,8 @@ impl MermaidRender {
         for clazz in classes {
             let mut dep_map: HashMap<String, String> = HashMap::default();
 
-            let members = PlantUmlRender::render_member(&clazz, &mut dep_map);
-            let methods = PlantUmlRender::render_method(&clazz, &mut dep_map);
+            let members = render_member(&clazz, &mut dep_map);
+            let methods = render_method(&clazz, &mut dep_map);
 
             let content = format!("{}{}", members.join(""), methods.join(""));
             let mut class_field = clazz.name.clone();
