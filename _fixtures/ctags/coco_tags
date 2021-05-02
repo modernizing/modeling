@@ -1,0 +1,20 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/Users/fdhuang/consultant/devops/coco/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	/d532b5c/
+CocoSwagger	coco_swagger/src/lib.rs	/^impl Default for CocoSwagger {$/;"	implementation	line:20	language:Rust
+CocoSwagger	coco_swagger/src/lib.rs	/^impl PluginInterface for CocoSwagger {$/;"	implementation	line:6	language:Rust
+CocoSwagger	coco_swagger/src/lib.rs	/^pub struct CocoSwagger {}$/;"	struct	line:4	language:Rust
+default	coco_swagger/src/lib.rs	/^    fn default() -> Self {$/;"	method	line:21	language:Rust	implementation:CocoSwagger
+execute	coco_swagger/src/lib.rs	/^    fn execute(&self, config: CocoConfig) {$/;"	method	line:15	language:Rust	implementation:CocoSwagger
+name	coco_swagger/src/lib.rs	/^    fn name(&self) -> &'static str {$/;"	method	line:7	language:Rust	implementation:CocoSwagger
+on_plugin_load	coco_swagger/src/lib.rs	/^    fn on_plugin_load(&self) {}$/;"	method	line:11	language:Rust	implementation:CocoSwagger
+on_plugin_unload	coco_swagger/src/lib.rs	/^    fn on_plugin_unload(&self) {}$/;"	method	line:13	language:Rust	implementation:CocoSwagger
+plugin	coco_swagger/src/lib.rs	/^pub fn plugin() -> Box<dyn PluginInterface> {$/;"	function	line:27	language:Rust
