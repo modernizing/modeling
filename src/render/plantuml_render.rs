@@ -23,9 +23,9 @@ impl PlantUmlRender {
             let methods = render_method(&clazz, &mut dep_map);
 
             let content = format!("{}{}", members.join(""), methods.join(""));
-            let mut class_field = clazz.name.clone();
+            let class_field = clazz.name.clone();
             if clazz.parents.len() > 0 {
-                class_field = format!("{} extends {}", clazz.name, clazz.parents.join(","));
+                rendered.push(format!("{} <|-- {}", clazz.parents.join(","), clazz.name));
             }
 
             rendered.push(format!("class {} {{\n{}}}", class_field, content));
