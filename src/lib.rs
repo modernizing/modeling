@@ -48,6 +48,8 @@ pub fn by_dir<P: AsRef<Path>>(path: P) -> Vec<ClassInfo> {
 /// ```
 /// use modeling::{by_files, PlantUmlRender};
 ///
+/// let mut files = vec![];
+/// files.push("src/lib.rs".to_string());
 /// let classes = by_files(files);
 /// let puml = PlantUmlRender::render(&classes);
 /// ```
