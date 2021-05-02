@@ -113,5 +113,8 @@ mod tests {
         let result = PlantUmlRender::render(&vec);
 
         println!("{}", result);
+        assert!(result.contains("class Animal"));
+        assert!(result.contains("class Horse extends Animal"));
+        assert!(result.contains("class Snake extends Animal "));
     }
 }

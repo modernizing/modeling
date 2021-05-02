@@ -9,6 +9,14 @@ process:
 3. analysis ctags logs
 4. output resulse
 
+language support:
+
+ - [x] Java
+ - [x] Cpp
+ - [x] TypeScript
+ - [x] Golang
+ - [x] Rust (basic)
+
 ## Usage
 
 ```rust
