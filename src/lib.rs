@@ -19,13 +19,17 @@ pub mod coco_struct;
 
 pub fn analysis_by_dir(url_str: &str) -> Vec<ClassInfo> {
     let origin_files = files_from_path(url_str);
-    let thread = count_thread(&origin_files);
+    let classes = by_files(origin_files);
 
+    classes
+}
+
+pub fn by_files(origin_files: Vec<String>) -> Vec<ClassInfo> {
+    let thread = count_thread(&origin_files);
     let opt = build_opt(thread);
 
     let files = files_by_thread(origin_files, &opt);
     let classes = run_ctags(&opt, &files);
-
     classes
 }
 
