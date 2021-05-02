@@ -1,10 +1,22 @@
 [package]
 name = "modeling"
 version = "0.1.0"
-authors = ["Phodal Huang <h@phodal.com>"]
+authors = ["Inherd Group <group@inherd.org>", "Phodal Huang <h@phodal.com>"]
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/inherd/modling"
+documentation = "https://github.com/inherd/modling"
+homepage = "https://github.com/inherd/modling"
+description = """
+Modeling is a tools to analysis different languages by Ctags
+"""
+categories = ["text-processing", "command-line-interface", "development-tools"]
+exclude = [
+    ".github/*",
+    ".gitattributes",
+    ".adr.json",
+]
 
 [dependencies]
 nix            = "0.19"
