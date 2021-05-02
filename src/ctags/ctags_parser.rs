@@ -313,7 +313,7 @@ impl CtagsParser {
 
 #[cfg(test)]
 mod test {
-    use crate::ctags_parser::CtagsParser;
+    use crate::CtagsParser;
     use std::path::PathBuf;
 
     pub fn tags_dir() -> PathBuf {

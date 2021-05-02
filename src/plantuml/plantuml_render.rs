@@ -96,8 +96,8 @@ impl PlantUmlRender {
 
 #[cfg(test)]
 mod tests {
-    use crate::plantuml_render::PlantUmlRender;
     use crate::coco_struct::{ClassInfo, MemberInfo, MethodInfo};
+    use crate::PlantUmlRender;
 
     #[test]
     fn should_render_empty() {
