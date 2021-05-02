@@ -4,6 +4,7 @@ use modeling::render::{PlantUmlRender, MermaidRender};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
+    println!("input args: {:?}", args);
     let mut path = ".".to_string();
     if args.len() > 1 {
         path = args[1].clone();
