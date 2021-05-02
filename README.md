@@ -12,10 +12,34 @@ process:
 ## Usage
 
 ```rust
-let vec = analysis_by_dir(".");
+let vec = analysis_by_dir("_fixtures/ctags/source/animal.ts");
 let result = PlantUmlRender::render(&vec);
 
 println!("{}", result);
+```
+
+output sample:
+
+```
+@startuml
+
+class Animal {
+  + string name
+  + string constructor()
+  +move()
+}
+
+class Horse extends Animal {
+  +move()
+}
+
+class Snake extends Animal {
+  +move()
+}
+
+@enduml
+
+Process finished with exit code 0
 ```
 
 License

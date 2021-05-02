@@ -97,7 +97,8 @@ mod tests {
         let root_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
         let ctags_dir = root_dir.join("_fixtures")
             .join("ctags")
-            .join("source");
+            .join("source")
+            .join("animal.ts");
 
         return ctags_dir;
     }
@@ -106,7 +107,9 @@ mod tests {
     #[test]
     fn should_run_struct_analysis() {
         let path = format!("{}", ctags_fixtures_dir().display());
-        let vec = by_dir(path.as_str());
+        let vec = by_dir(path);
+
+        assert_eq!(3, vec.len());
         let result = PlantUmlRender::render(&vec);
 
         println!("{}", result);
