@@ -10,11 +10,10 @@ pub use coco_struct::{ClassInfo, MemberInfo, MethodInfo};
 pub use ctags::ctags_cmd::CmdCtags;
 pub use ctags::ctags_opt::Opt;
 pub use ctags::ctags_parser::CtagsParser;
-pub use plantuml::plantuml_render::PlantUmlRender;
 use std::path::Path;
 
 pub mod ctags;
-pub mod plantuml;
+pub mod render;
 pub mod coco_struct;
 
 /// Returns Vec<ClassInfo> with the given path.
@@ -26,7 +25,8 @@ pub mod coco_struct;
 /// # Examples
 ///
 /// ```
-/// use modeling::{by_dir, PlantUmlRender};
+/// use modeling::{by_dir};
+/// use modeling::render::PlantUmlRender;
 ///
 /// let classes = by_dir("src/");
 /// let puml = PlantUmlRender::render(&classes);
@@ -46,7 +46,8 @@ pub fn by_dir<P: AsRef<Path>>(path: P) -> Vec<ClassInfo> {
 /// # Examples
 ///
 /// ```
-/// use modeling::{by_files, PlantUmlRender};
+/// use modeling::{by_files};
+/// use modeling::render::PlantUmlRender;
 ///
 /// let mut files = vec![];
 /// files.push("src/lib.rs".to_string());
@@ -119,7 +120,9 @@ fn build_opt(thread: usize) -> Opt {
 #[cfg(test)]
 mod tests {
     use std::path::PathBuf;
-    use crate::{by_dir, PlantUmlRender};
+    use std::fs;
+    use crate::render::{MermaidRender, PlantUmlRender};
+    use crate::by_dir;
 
     pub fn ctags_fixtures_dir() -> PathBuf {
         let root_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -131,7 +134,6 @@ mod tests {
         return ctags_dir;
     }
 
-
     #[test]
     fn should_run_struct_analysis() {
         let path = format!("{}", ctags_fixtures_dir().display());
@@ -140,9 +142,23 @@ mod tests {
         assert_eq!(3, vec.len());
         let result = PlantUmlRender::render(&vec);
 
-        println!("{}", result);
+        let _ = fs::write("demo.puml", result.clone());
         assert!(result.contains("class Animal"));
         assert!(result.contains("class Horse extends Animal"));
         assert!(result.contains("class Snake extends Animal "));
+    }
+
+    #[test]
+    fn should_render_mermaid() {
+        let path = format!("{}", ctags_fixtures_dir().display());
+        let vec = by_dir(path);
+
+        assert_eq!(3, vec.len());
+        let result = MermaidRender::render(&vec);
+
+        let _ = fs::write("demo.puml", result.clone());
+        assert!(result.contains("class Animal"));
+        assert!(result.contains("Animal <|-- Horse"));
+        assert!(result.contains("Animal <|-- Snake"));
     }
 }

@@ -52,7 +52,7 @@ impl PlantUmlRender {
         )
     }
 
-    fn render_method(clazz: &&ClassInfo, dep_map: &mut HashMap<String, String>) -> Vec<String> {
+    pub fn render_method(clazz: &&ClassInfo, dep_map: &mut HashMap<String, String>) -> Vec<String> {
         let mut methods = vec![];
         for method in &clazz.methods {
             if method.return_type.is_empty() {
@@ -73,7 +73,7 @@ impl PlantUmlRender {
         methods
     }
 
-    fn render_member(clazz: &&ClassInfo, dep_map: &mut HashMap<String, String>) -> Vec<String> {
+    pub fn render_member(clazz: &&ClassInfo, dep_map: &mut HashMap<String, String>) -> Vec<String> {
         let mut members = vec![];
         for member in &clazz.members {
             if member.data_type.is_empty() {
@@ -98,7 +98,7 @@ impl PlantUmlRender {
 #[cfg(test)]
 mod tests {
     use crate::coco_struct::{ClassInfo, MemberInfo, MethodInfo};
-    use crate::PlantUmlRender;
+    use crate::render::PlantUmlRender;
 
     #[test]
     fn should_render_empty() {
