@@ -19,16 +19,26 @@ language support:
 
 ## Usage
 
-```rust
-let vec = analysis_by_dir("_fixtures/ctags/source/animal.ts");
-let result = PlantUmlRender::render(&vec);
+### use binary
 
-println!("{}", result);
+```
+cargo install modeling
+modeling .
+```
+
+### Library
+
+```rust
+use modeling::{by_dir};
+use modeling::render::PlantUmlRender;
+
+let classes = by_dir("src/");
+let puml = PlantUmlRender::render(&classes);
 ```
 
 output sample:
 
-```
+```puml
 @startuml
 
 class Animal {
