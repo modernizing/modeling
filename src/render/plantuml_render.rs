@@ -19,8 +19,8 @@ impl PlantUmlRender {
         for clazz in classes {
             let mut dep_map: HashMap<String, String> = HashMap::default();
 
-            let members = render_member(&clazz, &mut dep_map);
-            let methods = render_method(&clazz, &mut dep_map);
+            let members = render_member(&clazz, &mut dep_map, "");
+            let methods = render_method(&clazz, &mut dep_map, "");
 
             let content = format!("{}{}", members.join(""), methods.join(""));
             let class_field = clazz.name.clone();

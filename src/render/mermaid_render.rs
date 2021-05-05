@@ -7,6 +7,7 @@ pub struct MermaidRender;
 
 impl MermaidRender {
     pub fn render(classes: &Vec<ClassInfo>) -> String {
+        let space = "    ";
         let mut rendered: Vec<String> = vec![];
         let mut deps: Vec<String> = vec![];
 
@@ -18,16 +19,16 @@ impl MermaidRender {
         for clazz in classes {
             let mut dep_map: HashMap<String, String> = HashMap::default();
 
-            let members = render_member(&clazz, &mut dep_map);
-            let methods = render_method(&clazz, &mut dep_map);
+            let members = render_member(&clazz, &mut dep_map, space);
+            let methods = render_method(&clazz, &mut dep_map, space);
 
             let content = format!("{}{}", members.join(""), methods.join(""));
             let class_field = clazz.name.clone();
             if clazz.parents.len() > 0 {
-                rendered.push(format!("{} <|-- {}", clazz.parents.join(","), clazz.name));
+                rendered.push(format!("{}{} <|-- {}", space, clazz.parents.join(","), clazz.name));
             }
 
-            rendered.push(format!("class {} {{\n{}}}", class_field, content));
+            rendered.push(format!("{}class {} {{\n{}{}}}", space, class_field, content, space));
 
             for (callee, current_clz) in dep_map {
                 if callee == current_clz {
@@ -38,12 +39,12 @@ impl MermaidRender {
                     continue;
                 }
 
-                deps.push(format!("{} -- {}\n", current_clz, callee));
+                deps.push(format!("{}{} -- {}\n", space, current_clz, callee));
             }
         }
 
         format!(
-            "\n{}\n{}",
+            "{}\n{}",
             rendered.join("\n\n"),
             deps.join("")
         )

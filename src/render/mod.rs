@@ -7,15 +7,15 @@ pub mod plantuml_render;
 pub mod mermaid_render;
 
 
-pub fn render_method(clazz: &&ClassInfo, dep_map: &mut HashMap<String, String>) -> Vec<String> {
+pub fn render_method(clazz: &&ClassInfo, dep_map: &mut HashMap<String, String>, space: &str) -> Vec<String> {
     let mut methods = vec![];
     for method in &clazz.methods {
         if method.return_type.is_empty() {
-            methods.push(format!("  {}{}()\n", method.access, method.name))
+            methods.push(format!("{}  {}{}()\n", space, method.access, method.name))
         } else {
             methods.push(format!(
-                "  {} {} {}()\n",
-                method.access, method.return_type, method.name
+                "{}  {} {} {}()\n",
+                space, method.access, method.return_type, method.name
             ));
 
             if method.pure_return_type.len() > 0 {
@@ -28,15 +28,15 @@ pub fn render_method(clazz: &&ClassInfo, dep_map: &mut HashMap<String, String>) 
     methods
 }
 
-pub fn render_member(clazz: &&ClassInfo, dep_map: &mut HashMap<String, String>) -> Vec<String> {
+pub fn render_member(clazz: &&ClassInfo, dep_map: &mut HashMap<String, String>, space: &str) -> Vec<String> {
     let mut members = vec![];
     for member in &clazz.members {
         if member.data_type.is_empty() {
-            members.push(format!("  {}{}\n", member.access, member.name))
+            members.push(format!("{}  {}{}\n", space, member.access, member.name))
         } else {
             members.push(format!(
-                "  {} {} {}\n",
-                member.access, member.data_type, member.name
+                "{}  {} {} {}\n",
+                space, member.access, member.data_type, member.name
             ));
 
             if member.pure_data_type.len() > 0 {

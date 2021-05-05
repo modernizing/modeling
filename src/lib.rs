@@ -156,6 +156,8 @@ mod tests {
         assert_eq!(3, vec.len());
         let result = MermaidRender::render(&vec);
 
+        println!("{:?}", result);
+
         let _ = fs::write("demo.puml", result.clone());
         assert!(result.contains("class Animal"));
         assert!(result.contains("Animal <|-- Horse"));
