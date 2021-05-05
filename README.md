@@ -1,5 +1,9 @@
 # Modeling
 
+[![crates.io](https://meritbadge.herokuapp.com/modeling)](https://crates.io/crates/druid)
+[![docs.rs](https://docs.rs/modeling/badge.svg)](https://docs.rs/modeling/)
+[![license](https://img.shields.io/crates/l/modeling)](https://github.com/inherd/modeling/blob/master/LICENSE)
+
 > Modeling is a tools to analysis different languages by Ctags
 
 process:
