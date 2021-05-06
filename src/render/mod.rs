@@ -124,10 +124,8 @@ mod tests {
         classes.push(demo2);
 
         let str = PlantUmlRender::render(&classes);
-        assert_eq!(
-            "@startuml\n\nclass Demo extends Demo2 {\n}\n\nclass Demo2 {\n}\n\n@enduml",
-            str
-        );
+        println!("{}", str);
+        assert!(str.contains("Demo2 <|-- Demo"));
     }
 
     #[test]

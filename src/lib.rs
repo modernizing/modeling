@@ -144,8 +144,8 @@ mod tests {
 
         let _ = fs::write("demo.puml", result.clone());
         assert!(result.contains("class Animal"));
-        assert!(result.contains("class Horse extends Animal"));
-        assert!(result.contains("class Snake extends Animal "));
+        assert!(result.contains("Animal <|-- Horse"));
+        assert!(result.contains("Animal <|-- Snake"));
     }
 
     #[test]
