@@ -21,6 +21,12 @@ language support:
  - [x] Golang
  - [x] Rust (basic)
 
+Todos:
+
+ - [ ] support for filter by file name
+ - [ ] support for ignore by files
+ - [ ] support for MyBatis to UML
+
 ## Usage
 
 ### use binary
