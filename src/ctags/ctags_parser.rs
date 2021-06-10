@@ -19,14 +19,17 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::PathBuf;
 use std::str::Lines;
+use crate::ParseOption;
 
 pub struct CtagsParser {
+    pub(crate) option: ParseOption,
     class_map: HashMap<String, ClassInfo>,
 }
 
 impl Default for CtagsParser {
     fn default() -> Self {
         CtagsParser {
+            option: Default::default(),
             class_map: Default::default(),
         }
     }

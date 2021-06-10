@@ -11,6 +11,8 @@ pub use ctags::ctags_cmd::CmdCtags;
 pub use ctags::ctags_opt::Opt;
 pub use ctags::ctags_parser::CtagsParser;
 pub use file_filter::*;
+pub use parse_option::ParseOption;
+
 use std::path::Path;
 use crate::file_filter::FileFilter;
 
@@ -29,17 +31,17 @@ pub mod parse_option;
 /// # Examples
 ///
 /// ```
-/// use modeling::{by_dir};
+/// use modeling::{by_dir, ParseOption};
 /// use modeling::render::PlantUmlRender;
 ///
 /// use modeling::file_filter::FileFilter;
-/// let classes = by_dir("src/",FileFilter::default());
+/// let classes = by_dir("src/",FileFilter::default(),ParseOption::default());
 /// let puml = PlantUmlRender::render(&classes);
 /// ```
-pub fn by_dir<P: AsRef<Path>>(path: P, filter: FileFilter) -> Vec<ClassInfo> {
+pub fn by_dir<P: AsRef<Path>>(path: P, filter: FileFilter, option: ParseOption) -> Vec<ClassInfo> {
     let origin_files = files_from_path(path, filter);
 
-    by_files(origin_files)
+    by_files(origin_files, option)
 }
 
 /// Returns Vec<ClassInfo> with the given files.
@@ -51,19 +53,19 @@ pub fn by_dir<P: AsRef<Path>>(path: P, filter: FileFilter) -> Vec<ClassInfo> {
 /// # Examples
 ///
 /// ```
-/// use modeling::{by_files};
+/// use modeling::{by_files, ParseOption};
 /// use modeling::render::PlantUmlRender;
 ///
 /// let mut files = vec![];
 /// files.push("src/lib.rs".to_string());
-/// let classes = by_files(files);
+/// let classes = by_files(files, ParseOption::default());
 /// let puml = PlantUmlRender::render(&classes);
 /// ```
-pub fn by_files(files: Vec<String>) -> Vec<ClassInfo> {
+pub fn by_files(files: Vec<String>, option: ParseOption) -> Vec<ClassInfo> {
     let thread = count_thread(&files);
     let opt = build_opt(thread);
 
-    run_ctags(&opt, &files_by_thread(files, &opt))
+    run_ctags(&opt, &files_by_thread(files, &opt), option)
 }
 
 fn count_thread(origin_files: &Vec<String>) -> usize {
@@ -75,7 +77,7 @@ fn count_thread(origin_files: &Vec<String>) -> usize {
     thread
 }
 
-fn run_ctags(opt: &Opt, files: &Vec<String>) -> Vec<ClassInfo> {
+fn run_ctags(opt: &Opt, files: &Vec<String>, option: ParseOption) -> Vec<ClassInfo> {
     let outputs = CmdCtags::call(&opt, &files).unwrap();
     let mut iters = Vec::new();
     for o in &outputs {
@@ -87,7 +89,8 @@ fn run_ctags(opt: &Opt, files: &Vec<String>) -> Vec<ClassInfo> {
         iters.push(iter);
     }
 
-    let parser = CtagsParser::parse_str(iters);
+    let mut parser = CtagsParser::parse_str(iters);
+    parser.option = option;
     let classes = parser.classes();
 
     classes
@@ -130,7 +133,7 @@ mod tests {
     use std::path::PathBuf;
     use std::fs;
     use crate::render::{MermaidRender, PlantUmlRender};
-    use crate::by_dir;
+    use crate::{by_dir, ParseOption};
     use crate::file_filter::FileFilter;
 
     pub fn ctags_fixtures_dir() -> PathBuf {
@@ -146,7 +149,7 @@ mod tests {
     #[test]
     fn should_run_struct_analysis() {
         let path = format!("{}", ctags_fixtures_dir().display());
-        let vec = by_dir(path, FileFilter::default());
+        let vec = by_dir(path, FileFilter::default(), ParseOption::default());
 
         assert_eq!(3, vec.len());
         let result = PlantUmlRender::render(&vec);
@@ -168,7 +171,7 @@ mod tests {
 
         let suffixes = vec!["store".to_string()];
 
-        let vec = by_dir(path, FileFilter::new(vec![], suffixes));
+        let vec = by_dir(path, FileFilter::new(vec![], suffixes), ParseOption::default());
 
         assert_eq!(3, vec.len());
         let result = PlantUmlRender::render(&vec);
@@ -181,7 +184,7 @@ mod tests {
     #[test]
     fn should_render_mermaid() {
         let path = format!("{}", ctags_fixtures_dir().display());
-        let vec = by_dir(path, FileFilter::default());
+        let vec = by_dir(path, FileFilter::default(), ParseOption::default());
 
         assert_eq!(3, vec.len());
         let result = MermaidRender::render(&vec);
