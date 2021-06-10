@@ -18,6 +18,7 @@ pub mod ctags;
 pub mod render;
 pub mod coco_struct;
 pub mod file_filter;
+pub mod parse_option;
 
 /// Returns Vec<ClassInfo> with the given path.
 ///
