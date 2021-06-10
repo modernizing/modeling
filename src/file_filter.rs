@@ -1,5 +1,9 @@
 use std::path::PathBuf;
 
+pub fn no_filter(_path: PathBuf, _packages: Vec<String>) -> bool {
+    return true;
+}
+
 pub fn filter_by_packages(path: PathBuf, packages: Vec<String>) -> bool {
     if packages.len() == 0 {
         return true;
@@ -18,9 +22,14 @@ pub fn filter_by_packages(path: PathBuf, packages: Vec<String>) -> bool {
 }
 
 pub fn filter_by_suffix(path: PathBuf, suffixes: Vec<String>) -> bool {
+    if suffixes.len() == 0 {
+        return true;
+    }
+
     if let None = path.file_name() {
         return false;
     }
+
     let file_name = path.file_name().unwrap().to_str().unwrap();
 
     for suffix in suffixes.iter() {
@@ -59,7 +68,7 @@ mod tests {
         let buf = PathBuf::new().join("controller").join("CustomController.java");
         let suffixes: Vec<String> = vec![];
 
-        assert_eq!(false, filter_by_suffix(buf, suffixes));
+        assert_eq!(true, filter_by_suffix(buf, suffixes));
     }
 
     #[test]
