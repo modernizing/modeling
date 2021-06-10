@@ -1,11 +1,12 @@
 use std::fs;
 
+use ignore::{WalkBuilder, DirEntry};
 use structopt::StructOpt;
 
-use modeling::{by_dir, ParseOption};
+use modeling::{by_dir, ClassInfo, ParseOption};
 use modeling::file_filter::FileFilter;
 use modeling::render::{MermaidRender, PlantUmlRender};
-use ignore::{WalkBuilder, DirEntry, Error};
+use std::ffi::OsStr;
 
 #[derive(StructOpt, Debug, PartialEq, Clone)]
 #[structopt(name = "basic")]
@@ -58,28 +59,42 @@ fn main() {
         return;
     }
 
-    // for result in WalkBuilder::new("./").max_depth(Some(1)).build() {
-    //     match result {
-    //         Ok(dir) => {
-    //           by_dir()
-    //         }
-    //         Err(_) => {}
-    //     }
-    // }
+    for result in WalkBuilder::new("./").max_depth(Some(1)).build() {
+        if let Ok(dir) = result {
+            let path = dir.path();
+            if path.is_dir() {
+                if let Some(x) = path.file_name() {
+                    output_by_dir(&opts, &parse_option, &filter, &dir, x)
+                };
+            }
+        }
+    }
+}
 
+fn output_by_dir(opts: &Opts, parse_option: &ParseOption, filter: &FileFilter, dir: &DirEntry, x: &OsStr) {
+    let dir_name = x.to_str().unwrap();
+    let classes = by_dir(dir.path(), filter.clone(), parse_option.clone());
+    if classes.len() > 0 {
+        output_file(&opts, &classes, dir_name)
+    }
 }
 
 fn output_all_in_one(opts: Opts, parse_option: ParseOption, filter: FileFilter) {
     let classes = by_dir(&opts.input, filter, parse_option);
+    output_file(&opts, &classes, "modeling");
+}
 
+fn output_file(opts: &Opts, classes: &Vec<ClassInfo>, name: &str) {
     match opts.output_type.as_str() {
         "mermaid" => {
             let uml = MermaidRender::render(&classes);
-            let _ = fs::write("modeling.mermaid", uml);
+            let file_name = format!("{}.mermaid", name);
+            let _ = fs::write(file_name, uml);
         }
         &_ => {
             let uml = PlantUmlRender::render(&classes);
-            let _ = fs::write("modeling.puml", uml);
+            let file_name = format!("{}.puml", name);
+            let _ = fs::write(file_name, uml);
         }
     }
 }
