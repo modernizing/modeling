@@ -5,13 +5,18 @@ use structopt::StructOpt;
 use modeling::{by_dir, ParseOption};
 use modeling::file_filter::FileFilter;
 use modeling::render::{MermaidRender, PlantUmlRender};
+use ignore::{WalkBuilder, DirEntry, Error};
 
-#[derive(StructOpt, Debug, PartialEq)]
+#[derive(StructOpt, Debug, PartialEq, Clone)]
 #[structopt(name = "basic")]
 struct Opts {
     /// merge for same method name
     #[structopt(short, long)]
     merge: bool,
+
+    /// multiple modules
+    #[structopt(short, long)]
+    by_modules: bool,
 
     /// input dir
     #[structopt(short, long, default_value = ".")]
@@ -46,8 +51,26 @@ fn main() {
     println!("suffixes: {:?}", opts.suffixes);
 
     let parse_option = opts.to_parse_option();
-    let filter = FileFilter::new(opts.packages, opts.suffixes);
-    let classes = by_dir(opts.input, filter, parse_option);
+    let filter = FileFilter::new(opts.packages.clone(), opts.suffixes.clone());
+
+    if !opts.by_modules {
+        output_all_in_one(opts, parse_option, filter);
+        return;
+    }
+
+    // for result in WalkBuilder::new("./").max_depth(Some(1)).build() {
+    //     match result {
+    //         Ok(dir) => {
+    //           by_dir()
+    //         }
+    //         Err(_) => {}
+    //     }
+    // }
+
+}
+
+fn output_all_in_one(opts: Opts, parse_option: ParseOption, filter: FileFilter) {
+    let classes = by_dir(&opts.input, filter, parse_option);
 
     match opts.output_type.as_str() {
         "mermaid" => {
