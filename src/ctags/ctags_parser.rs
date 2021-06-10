@@ -323,7 +323,7 @@ impl CtagsParser {
 
 #[cfg(test)]
 mod test {
-    use crate::CtagsParser;
+    use crate::{CtagsParser, ParseOption};
     use std::path::PathBuf;
 
     pub fn tags_dir() -> PathBuf {
@@ -480,18 +480,25 @@ name	src/coco_struct.rs	/^    pub name: String,$/;\"	field	line:22	language:Rust
 
     #[test]
     pub fn should_merge_duplicate() {
-        let str = "MethodIdentifier	SubscriberRegistry.java	/^    MethodIdentifier(Method method) {$/;\"	method	line:239	language:Java	class:SubscriberRegistry.MethodIdentifier	access:default
-MethodIdentifier	SubscriberRegistry.java	/^  private static final class MethodIdentifier {$/;\"	class	line:234	language:Java	class:SubscriberRegistry	access:private
-MethodIdentifier	SubscriberRegistry.java	/^  private static final class MethodIdentifier {$/;\"	class	line:238	language:Java	class:SubscriberRegistry	access:private";
+        let str = "\
+MethodIdentifier	SubscriberRegistry.java	/^    MethodIdentifier(Method method) {$/;\"	method	line:239	language:Java	class:SubscriberRegistry.MethodIdentifier	access:default
+MethodIdentifier	SubscriberRegistry.java	/^    MethodIdentifier(Method method) {$/;\"	method	line:238	language:Java	class:SubscriberRegistry.MethodIdentifier	access:default
+MethodIdentifier	SubscriberRegistry.java	/^  private static final class MethodIdentifier {$/;\"	class	line:234	language:Java	class:SubscriberRegistry	access:private";
 
         let mut lines = vec![];
         lines.push(str.lines());
-        let parser = CtagsParser::parse_str(lines);
+        let parser = CtagsParser::parse_str(lines.clone());
         let classes = parser.classes();
 
-        assert_eq!(1, classes.len());
+        assert_eq!(2, classes[0].methods.len());
+
+        let mut option = ParseOption::default();
+        option.merge = true;
+
+        let mut parser = CtagsParser::parse_str(lines);
+        parser.option = option;
+        let classes = parser.classes();
+
         assert_eq!(1, classes[0].methods.len());
-        let first_method = classes[0].methods[0].clone();
-        assert_eq!("MethodIdentifier", first_method.return_type);
     }
 }
