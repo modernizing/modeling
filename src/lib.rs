@@ -10,7 +10,9 @@ pub use coco_struct::{ClassInfo, MemberInfo, MethodInfo};
 pub use ctags::ctags_cmd::CmdCtags;
 pub use ctags::ctags_opt::Opt;
 pub use ctags::ctags_parser::CtagsParser;
+pub use file_filter::*;
 use std::path::Path;
+use crate::file_filter::FileFilter;
 
 pub mod ctags;
 pub mod render;
@@ -29,11 +31,12 @@ pub mod file_filter;
 /// use modeling::{by_dir};
 /// use modeling::render::PlantUmlRender;
 ///
-/// let classes = by_dir("src/");
+/// use modeling::file_filter::FileFilter;
+/// let classes = by_dir("src/",FileFilter::default());
 /// let puml = PlantUmlRender::render(&classes);
 /// ```
-pub fn by_dir<P: AsRef<Path>>(path: P) -> Vec<ClassInfo> {
-    let origin_files = files_from_path(path);
+pub fn by_dir<P: AsRef<Path>>(path: P, filter: FileFilter) -> Vec<ClassInfo> {
+    let origin_files = files_from_path(path, filter);
 
     by_files(origin_files)
 }
@@ -89,12 +92,15 @@ fn run_ctags(opt: &Opt, files: &Vec<String>) -> Vec<ClassInfo> {
     classes
 }
 
-fn files_from_path<P: AsRef<Path>>(path: P) -> Vec<String> {
+fn files_from_path<P: AsRef<Path>>(path: P, filter: FileFilter) -> Vec<String> {
     let mut origin_files = vec![];
     for result in Walk::new(path) {
         if let Ok(entry) = result {
             if entry.file_type().unwrap().is_file() {
-                origin_files.push(format!("{}", entry.path().display()))
+                let buf = entry.path().to_path_buf();
+                if filter.allow(buf) {
+                    origin_files.push(format!("{}", entry.path().display()))
+                }
             }
         }
     }
@@ -124,6 +130,7 @@ mod tests {
     use std::fs;
     use crate::render::{MermaidRender, PlantUmlRender};
     use crate::by_dir;
+    use crate::file_filter::FileFilter;
 
     pub fn ctags_fixtures_dir() -> PathBuf {
         let root_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -138,7 +145,7 @@ mod tests {
     #[test]
     fn should_run_struct_analysis() {
         let path = format!("{}", ctags_fixtures_dir().display());
-        let vec = by_dir(path);
+        let vec = by_dir(path, FileFilter::default());
 
         assert_eq!(3, vec.len());
         let result = PlantUmlRender::render(&vec);
@@ -150,9 +157,30 @@ mod tests {
     }
 
     #[test]
+    fn should_only_have_one_file() {
+        let root_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        let ctags_dir = root_dir.join("_fixtures")
+            .join("ctags")
+            .join("source");
+
+        let path = format!("{}", ctags_dir.display());
+
+        let suffixes = vec!["store".to_string()];
+
+        let vec = by_dir(path, FileFilter::new(vec![], suffixes));
+
+        assert_eq!(3, vec.len());
+        let result = PlantUmlRender::render(&vec);
+
+        let _ = fs::write("demo.puml", result.clone());
+        assert!(!result.contains("class Animal"));
+        assert!(result.contains("class classinfo_st"));
+    }
+
+    #[test]
     fn should_render_mermaid() {
         let path = format!("{}", ctags_fixtures_dir().display());
-        let vec = by_dir(path);
+        let vec = by_dir(path, FileFilter::default());
 
         assert_eq!(3, vec.len());
         let result = MermaidRender::render(&vec);

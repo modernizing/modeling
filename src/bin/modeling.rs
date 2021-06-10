@@ -3,8 +3,9 @@ use std::fs;
 use clap::{AppSettings, Clap};
 use structopt::StructOpt;
 
-use modeling::by_dir;
+use modeling::{by_dir};
 use modeling::render::{MermaidRender, PlantUmlRender};
+use modeling::file_filter::FileFilter;
 
 #[derive(StructOpt, Debug, Clap)]
 #[clap(version = "1.0", author = "Inherd Group <group@inherd.org>")]
@@ -34,7 +35,8 @@ fn main() {
     println!("packages: {:?}", opts.packages);
     println!("suffixes: {:?}", opts.suffixes);
 
-    let classes = by_dir(opts.input);
+    let filter = FileFilter::new(opts.packages, opts.suffixes);
+    let classes = by_dir(opts.input, filter);
 
     match opts.output_type.as_str() {
         "mermaid" => {

@@ -1,10 +1,52 @@
 use std::path::PathBuf;
 
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct FileFilter {
+    packages: Vec<String>,
+    suffixes: Vec<String>,
+}
+
+impl Default for FileFilter {
+    fn default() -> Self {
+        FileFilter {
+            packages: vec![],
+            suffixes: vec![]
+        }
+    }
+}
+
+impl FileFilter {
+    pub fn new(packages: Vec<String>, suffixes: Vec<String>) -> FileFilter {
+        FileFilter {
+            packages,
+            suffixes
+        }
+    }
+
+    pub fn allow(&self, path: PathBuf) -> bool {
+        if self.packages.len() == 0 && self.suffixes.len() == 0 {
+            return true;
+        }
+
+        if self.packages.len() > 0 {
+            return filter_by_packages(path, &self.packages)
+        }
+
+        if self.suffixes.len() > 0 {
+            return filter_by_suffix(path, &self.suffixes)
+        }
+
+        return false;
+    }
+}
+
 pub fn no_filter(_path: PathBuf, _packages: Vec<String>) -> bool {
     return true;
 }
 
-pub fn filter_by_packages(path: PathBuf, packages: Vec<String>) -> bool {
+pub fn filter_by_packages(path: PathBuf, packages: &Vec<String>) -> bool {
     if packages.len() == 0 {
         return true;
     }
@@ -21,7 +63,7 @@ pub fn filter_by_packages(path: PathBuf, packages: Vec<String>) -> bool {
     return false;
 }
 
-pub fn filter_by_suffix(path: PathBuf, suffixes: Vec<String>) -> bool {
+pub fn filter_by_suffix(path: PathBuf, suffixes: &Vec<String>) -> bool {
     if suffixes.len() == 0 {
         return true;
     }
@@ -52,7 +94,7 @@ mod tests {
         let buf = PathBuf::new().join("model").join("CustomModel.java");
         let suffixes = vec!["Model".to_string()];
 
-        assert!(filter_by_suffix(buf, suffixes));
+        assert!(filter_by_suffix(buf, &suffixes));
     }
 
     #[test]
@@ -60,7 +102,7 @@ mod tests {
         let buf = PathBuf::new().join("controller").join("CustomController.java");
         let suffixes = vec!["Model".to_string()];
 
-        assert_eq!(false, filter_by_suffix(buf, suffixes));
+        assert_eq!(false, filter_by_suffix(buf, &suffixes));
     }
 
     #[test]
@@ -68,7 +110,7 @@ mod tests {
         let buf = PathBuf::new().join("controller").join("CustomController.java");
         let suffixes: Vec<String> = vec![];
 
-        assert_eq!(true, filter_by_suffix(buf, suffixes));
+        assert_eq!(true, filter_by_suffix(buf, &suffixes));
     }
 
     #[test]
@@ -79,7 +121,7 @@ mod tests {
 
         let suffixes = vec!["model".to_string()];
 
-        assert!(filter_by_packages(buf, suffixes));
+        assert!(filter_by_packages(buf, &suffixes));
     }
 
     #[test]
@@ -90,7 +132,7 @@ mod tests {
 
         let suffixes = vec!["controller".to_string()];
 
-        assert_eq!(false, filter_by_packages(buf, suffixes));
+        assert_eq!(false, filter_by_packages(buf, &suffixes));
     }
 
     #[test]
@@ -101,6 +143,6 @@ mod tests {
 
         let suffixes: Vec<String> = vec![];
 
-        assert!(filter_by_packages(buf, suffixes));
+        assert!(filter_by_packages(buf, &suffixes));
     }
 }
