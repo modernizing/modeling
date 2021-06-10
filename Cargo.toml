@@ -41,3 +41,8 @@ clap = "3.0.0-beta.2"
 # command args to struct
 structopt      = "0.3"
 structopt-toml = "0.4"
+
+[workspace]
+members = [
+    "sqling"
+]
