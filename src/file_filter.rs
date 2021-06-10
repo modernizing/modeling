@@ -51,16 +51,16 @@ pub fn filter_by_packages(path: PathBuf, packages: &Vec<String>) -> bool {
         return true;
     }
 
+    let mut include_package = false;
     for child in path.iter() {
-        return match child.to_str() {
-            None => { false }
-            Some(sub) => {
-                packages.contains(&sub.to_string())
+        if let Some(sub) = child.to_str() {
+            if packages.contains(&sub.to_string()) {
+                include_package = true;
             }
         }
     }
 
-    return false;
+    return include_package;
 }
 
 pub fn filter_by_suffix(path: PathBuf, suffixes: &Vec<String>) -> bool {
