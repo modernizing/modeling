@@ -33,7 +33,7 @@ struct Opts {
 impl Opts {
     pub fn to_parse_option(&self) -> ParseOption {
         ParseOption {
-            merge_method: self.merge
+            merge: self.merge
         }
     }
 }

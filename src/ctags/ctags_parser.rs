@@ -290,6 +290,13 @@ impl CtagsParser {
             clazz
                 .members
                 .sort_by(|a, b| a.name.to_lowercase().cmp(&b.name.to_lowercase()));
+
+
+            if self.option.merge {
+                clazz.methods.dedup_by(|a, b| a.name.eq_ignore_ascii_case(&*b.name));
+                clazz.members.dedup_by(|a, b| a.name.eq_ignore_ascii_case(&*b.name));
+            }
+
             classes.push(clazz);
         }
 
@@ -469,5 +476,22 @@ name	src/coco_struct.rs	/^    pub name: String,$/;\"	field	line:22	language:Rust
         assert_eq!(2, methods.len());
         assert_eq!("constructor", methods[0].name);
         assert_eq!("move", methods[1].name)
+    }
+
+    #[test]
+    pub fn should_merge_duplicate() {
+        let str = "MethodIdentifier	SubscriberRegistry.java	/^    MethodIdentifier(Method method) {$/;\"	method	line:239	language:Java	class:SubscriberRegistry.MethodIdentifier	access:default
+MethodIdentifier	SubscriberRegistry.java	/^  private static final class MethodIdentifier {$/;\"	class	line:234	language:Java	class:SubscriberRegistry	access:private
+MethodIdentifier	SubscriberRegistry.java	/^  private static final class MethodIdentifier {$/;\"	class	line:238	language:Java	class:SubscriberRegistry	access:private";
+
+        let mut lines = vec![];
+        lines.push(str.lines());
+        let parser = CtagsParser::parse_str(lines);
+        let classes = parser.classes();
+
+        assert_eq!(1, classes.len());
+        assert_eq!(1, classes[0].methods.len());
+        let first_method = classes[0].methods[0].clone();
+        assert_eq!("MethodIdentifier", first_method.return_type);
     }
 }
