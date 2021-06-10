@@ -15,6 +15,7 @@ use std::path::Path;
 pub mod ctags;
 pub mod render;
 pub mod coco_struct;
+pub mod file_filter;
 
 /// Returns Vec<ClassInfo> with the given path.
 ///
