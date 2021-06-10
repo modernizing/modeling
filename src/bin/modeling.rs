@@ -1,23 +1,34 @@
-use std::{env, fs};
+use std::fs;
+
+use clap::{AppSettings, Clap};
+
 use modeling::by_dir;
-use modeling::render::{PlantUmlRender, MermaidRender};
+use modeling::render::{MermaidRender, PlantUmlRender};
+
+#[derive(Clap)]
+#[clap(version = "1.0", author = "Inherd Group <group@inherd.org>")]
+#[clap(setting = AppSettings::ColoredHelp)]
+struct Opts {
+    #[clap(short, long, default_value = ".")]
+    source_dir: String,
+
+    #[clap(short, long, default_value = "puml")]
+    output_type: String,
+
+    #[clap(long)]
+    packages: Vec<String>,
+
+    #[clap(long)]
+    suffixes: Vec<String>,
+}
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    println!("input args: {:?}", args);
-    let mut path = ".".to_string();
-    if args.len() > 1 {
-        path = args[1].clone();
-    }
-    let mut design_type = "puml".to_string();
-    if args.len() > 2 {
-        design_type = args[2].clone();
-    }
+    let opts: Opts = Opts::parse();
+    println!("Input path: {:?}", opts.source_dir);
 
-    println!("Input path: {:?}", path.clone());
-    let classes = by_dir(path.as_str());
+    let classes = by_dir(opts.source_dir);
 
-    match design_type.as_str() {
+    match opts.output_type.as_str() {
         "mermaid" => {
             let uml = MermaidRender::render(&classes);
             let _ = fs::write("modeling.mermaid", uml);
@@ -27,5 +38,4 @@ fn main() {
             let _ = fs::write("modeling.puml", uml);
         }
     }
-
 }
