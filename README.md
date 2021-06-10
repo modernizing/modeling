@@ -23,9 +23,10 @@ language support:
 
 Todos:
 
- - [ ] support for filter by file name
- - [ ] support for ignore by files
- - [ ] support for MyBatis to UML
+ - [x] support for filter by file name
+ - [x] support for ignore by files
+ - [ ] merge options
+ - [ ] support for sql file
 
 ## Usage
 

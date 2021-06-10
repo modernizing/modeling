@@ -27,6 +27,10 @@ struct Opts {
     // filter suffixes
     #[clap(long, short, use_delimiter = true)]
     suffixes: Vec<String>,
+
+    /// merge for same method name
+    #[clap(long, short, default_value = false)]
+    merge: bool
 }
 
 fn main() {
