@@ -26,8 +26,8 @@ Todos:
  - [x] support for filter by file name
  - [x] support for ignore by files
  - [x] merge options
+ - [ ] support ignore methods 
  - [ ] change to tree-sitter for parser
- - [ ] support for sql file
 
 ## Usage
 
