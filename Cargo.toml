@@ -44,5 +44,6 @@ structopt-toml = "0.4"
 
 [workspace]
 members = [
-    "sqling"
+    "sqling",
+    "domaining"
 ]
