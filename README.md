@@ -16,6 +16,7 @@ process:
 language support:
 
  - [x] Java
+ - [x] C# (basic, not testing namespace)
  - [x] Cpp
  - [x] TypeScript
  - [x] Golang
