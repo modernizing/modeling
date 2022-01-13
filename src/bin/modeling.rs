@@ -35,8 +35,11 @@ struct Opts {
     #[structopt(long, short, use_delimiter = true)]
     suffixes: Vec<String>,
 
-    #[structopt(short)]
+    #[structopt(short, long)]
     field_only: bool,
+
+    #[structopt(short, long)]
+    grep: String,
 }
 
 impl Opts {
@@ -56,7 +59,7 @@ fn main() {
     println!("suffixes: {:?}", opts.suffixes);
 
     let parse_option = opts.to_parse_option();
-    let filter = FileFilter::new(opts.packages.clone(), opts.suffixes.clone());
+    let filter = FileFilter::new(opts.packages.clone(), opts.suffixes.clone(), opts.grep.clone());
 
     if !opts.by_modules {
         output_all_in_one(opts, &parse_option, filter);

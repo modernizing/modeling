@@ -173,7 +173,7 @@ mod tests {
         let suffixes = vec!["store".to_string()];
 
         let option = ParseOption::default();
-        let vec = by_dir(path, FileFilter::new(vec![], suffixes), &option);
+        let vec = by_dir(path, FileFilter::new(vec![], suffixes, "".to_string()), &option);
 
         assert_eq!(3, vec.len());
         let result = PlantUmlRender::render(&vec, &option);
@@ -181,6 +181,22 @@ mod tests {
         let _ = fs::write("demo.puml", result.clone());
         assert!(!result.contains("class Animal"));
         assert!(result.contains("class classinfo_st"));
+    }
+
+    #[test]
+    fn should_filter_by_grep() {
+        let root_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        let ctags_dir = root_dir.join("_fixtures")
+            .join("ctags")
+            .join("source");
+
+        let path = format!("{}", ctags_dir.display());
+
+        let option = ParseOption::default();
+        let filter = FileFilter::new(vec![], vec![], "store.go".to_string());
+        let vec = by_dir(path, filter, &option);
+
+        assert_eq!(3, vec.len());
     }
 
     #[test]

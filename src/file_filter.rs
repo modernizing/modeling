@@ -1,9 +1,13 @@
 use std::path::PathBuf;
+use grep_regex::{RegexMatcher};
+use grep_searcher::Searcher;
+use grep_searcher::sinks::UTF8;
 
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct FileFilter {
+    grep: String,
     packages: Vec<String>,
     suffixes: Vec<String>,
 }
@@ -11,36 +15,68 @@ pub struct FileFilter {
 impl Default for FileFilter {
     fn default() -> Self {
         FileFilter {
+            grep: "".to_string(),
             packages: vec![],
-            suffixes: vec![]
+            suffixes: vec![],
         }
     }
 }
 
 impl FileFilter {
-    pub fn new(packages: Vec<String>, suffixes: Vec<String>) -> FileFilter {
+    pub fn new(packages: Vec<String>, suffixes: Vec<String>, string: String) -> FileFilter {
         FileFilter {
+            grep: string,
             packages,
-            suffixes
+            suffixes,
         }
     }
 
     pub fn allow(&self, path: PathBuf) -> bool {
+        if self.grep.len() > 0 {
+            return match RegexMatcher::new(&self.grep) {
+                Ok(matcher) => {
+                    grep_by_text(&matcher, &format!("{:}", path.display()))
+                }
+                Err(err) => {
+                    println!("error: {:?}", err);
+                    false
+                }
+            }
+        }
+
         if self.packages.len() == 0 && self.suffixes.len() == 0 {
             return true;
         }
 
         if self.packages.len() > 0 {
-            return filter_by_packages(path, &self.packages)
+            return filter_by_packages(path, &self.packages);
         }
 
         if self.suffixes.len() > 0 {
-            return filter_by_suffix(path, &self.suffixes)
+            return filter_by_suffix(path, &self.suffixes);
         }
 
         return false;
     }
 }
+
+pub fn grep_by_text(matcher: &RegexMatcher, text: &str) -> bool {
+    let from = text.as_bytes();
+    let mut searcher = Searcher::new();
+
+    let mut has_match = false;
+    let _ = searcher.search_reader(
+        matcher,
+        from,
+        UTF8(|_, _| {
+            has_match = true;
+            Ok(true)
+        }),
+    );
+
+    has_match
+}
+
 
 pub fn no_filter(_path: PathBuf, _packages: Vec<String>) -> bool {
     return true;
