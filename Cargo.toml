@@ -42,6 +42,9 @@ clap = "3.0.0-beta.2"
 structopt      = "0.3"
 structopt-toml = "0.4"
 
+similar =  { version = "2.1.0", features = ["text", "inline", "bytes"] }
+console = "0.15.0"
+
 [workspace]
 members = [
     "sqling",
