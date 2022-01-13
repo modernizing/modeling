@@ -53,12 +53,13 @@ pub fn render_member(clazz: &&ClassInfo, dep_map: &mut HashMap<String, String>, 
 #[cfg(test)]
 mod tests {
     use crate::coco_struct::{ClassInfo, MemberInfo, MethodInfo};
+    use crate::ParseOption;
     use crate::render::PlantUmlRender;
 
     #[test]
     fn should_render_empty() {
         let classes = vec![];
-        let str = PlantUmlRender::render(&classes);
+        let str = PlantUmlRender::render(&classes, &ParseOption::default());
         assert_eq!("@startuml\n\n\n\n@enduml", str);
     }
 
@@ -68,7 +69,7 @@ mod tests {
         let demo = ClassInfo::new("Demo");
         classes.push(demo);
 
-        let str = PlantUmlRender::render(&classes);
+        let str = PlantUmlRender::render(&classes, &ParseOption::default());
         assert_eq!("@startuml\n\nclass Demo {\n}\n\n@enduml", str);
     }
 
@@ -85,7 +86,7 @@ mod tests {
 
         classes.push(demo);
 
-        let str = PlantUmlRender::render(&classes);
+        let str = PlantUmlRender::render(&classes, &ParseOption::default());
         assert_eq!(
             "@startuml\n\nclass Demo {\n  - String demo\n  - Demo method()\n}\n\n@enduml",
             str
@@ -107,7 +108,7 @@ mod tests {
         classes.push(demo);
         classes.push(demo2);
 
-        let str = PlantUmlRender::render(&classes);
+        let str = PlantUmlRender::render(&classes, &ParseOption::default());
         assert_eq!(true, str.contains("Demo -- Demo2"));
         assert_eq!(false, str.contains("Demo -- String"));
     }
@@ -123,7 +124,7 @@ mod tests {
         classes.push(demo);
         classes.push(demo2);
 
-        let str = PlantUmlRender::render(&classes);
+        let str = PlantUmlRender::render(&classes, &ParseOption::default());
         println!("{}", str);
         assert!(str.contains("Demo2 <|-- Demo"));
     }
@@ -141,7 +142,7 @@ mod tests {
         classes.push(demo);
         classes.push(demo2);
 
-        let str = PlantUmlRender::render(&classes);
+        let str = PlantUmlRender::render(&classes, &ParseOption::default());
         assert_eq!(true, str.contains("Demo -- Demo2"));
         assert_eq!(false, str.contains("Demo -- String"));
     }

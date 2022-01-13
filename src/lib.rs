@@ -36,7 +36,7 @@ pub mod parse_option;
 ///
 /// use modeling::file_filter::FileFilter;
 /// let classes = by_dir("src/",FileFilter::default(), &ParseOption::default());
-/// let puml = PlantUmlRender::render(&classes);
+/// let puml = PlantUmlRender::render(&classes, &ParseOption::default());
 /// ```
 pub fn by_dir<P: AsRef<Path>>(path: P, filter: FileFilter, option: &ParseOption) -> Vec<ClassInfo> {
     let origin_files = files_from_path(path, filter);
@@ -59,7 +59,7 @@ pub fn by_dir<P: AsRef<Path>>(path: P, filter: FileFilter, option: &ParseOption)
 /// let mut files = vec![];
 /// files.push("src/lib.rs".to_string());
 /// let classes = by_files(files, &ParseOption::default());
-/// let puml = PlantUmlRender::render(&classes);
+/// let puml = PlantUmlRender::render(&classes, &ParseOption::default());
 /// ```
 pub fn by_files(files: Vec<String>, option: &ParseOption) -> Vec<ClassInfo> {
     let thread = count_thread(&files);
@@ -149,10 +149,11 @@ mod tests {
     #[test]
     fn should_run_struct_analysis() {
         let path = format!("{}", ctags_fixtures_dir().display());
-        let vec = by_dir(path, FileFilter::default(), &ParseOption::default());
+        let option = ParseOption::default();
+        let vec = by_dir(path, FileFilter::default(), &option);
 
         assert_eq!(3, vec.len());
-        let result = PlantUmlRender::render(&vec);
+        let result = PlantUmlRender::render(&vec, &option);
 
         let _ = fs::write("demo.puml", result.clone());
         assert!(result.contains("class Animal"));
@@ -171,10 +172,11 @@ mod tests {
 
         let suffixes = vec!["store".to_string()];
 
-        let vec = by_dir(path, FileFilter::new(vec![], suffixes), &ParseOption::default());
+        let option = ParseOption::default();
+        let vec = by_dir(path, FileFilter::new(vec![], suffixes), &option);
 
         assert_eq!(3, vec.len());
-        let result = PlantUmlRender::render(&vec);
+        let result = PlantUmlRender::render(&vec, &option);
 
         let _ = fs::write("demo.puml", result.clone());
         assert!(!result.contains("class Animal"));
@@ -184,10 +186,11 @@ mod tests {
     #[test]
     fn should_render_mermaid() {
         let path = format!("{}", ctags_fixtures_dir().display());
-        let vec = by_dir(path, FileFilter::default(), &ParseOption::default());
+        let option = ParseOption::default();
+        let vec = by_dir(path, FileFilter::default(), &option);
 
         assert_eq!(3, vec.len());
-        let result = MermaidRender::render(&vec, );
+        let result = MermaidRender::render(&vec, &option);
 
         println!("{:?}", result);
 

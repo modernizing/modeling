@@ -1,13 +1,14 @@
 use std::collections::HashMap;
 
 use crate::coco_struct::ClassInfo;
+use crate::ParseOption;
 use crate::render::{render_member, render_method};
 
 /// Render classes info to string
 pub struct PlantUmlRender;
 
 impl PlantUmlRender {
-    pub fn render(classes: &Vec<ClassInfo>) -> String {
+    pub fn render(classes: &Vec<ClassInfo>, parse_option: &ParseOption) -> String {
         let mut rendered: Vec<String> = vec![];
         let mut deps: Vec<String> = vec![];
 
@@ -20,7 +21,10 @@ impl PlantUmlRender {
             let mut dep_map: HashMap<String, String> = HashMap::default();
 
             let members = render_member(&clazz, &mut dep_map, "");
-            let methods = render_method(&clazz, &mut dep_map, "");
+            let mut methods= vec![];
+            if !parse_option.field_only {
+                methods = render_method(&clazz, &mut dep_map, "");
+            }
 
             let content = format!("{}{}", members.join(""), methods.join(""));
             let class_field = clazz.name.clone();

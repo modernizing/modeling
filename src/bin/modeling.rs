@@ -89,14 +89,15 @@ fn output_all_in_one(opts: Opts, parse_option: &ParseOption, filter: FileFilter)
 }
 
 fn output_file(opts: &Opts, classes: &Vec<ClassInfo>, name: &str) {
+    let parse_option = opts.to_parse_option();
     match opts.output_type.as_str() {
         "mermaid" => {
-            let uml = MermaidRender::render(&classes);
+            let uml = MermaidRender::render(&classes, &parse_option);
             let file_name = format!("{}.mermaid", name);
             let _ = fs::write(file_name, uml);
         }
         &_ => {
-            let uml = PlantUmlRender::render(&classes);
+            let uml = PlantUmlRender::render(&classes, &parse_option);
             let file_name = format!("{}.puml", name);
             let _ = fs::write(file_name, uml);
         }
