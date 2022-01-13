@@ -187,7 +187,7 @@ mod tests {
         let vec = by_dir(path, FileFilter::default(), &ParseOption::default());
 
         assert_eq!(3, vec.len());
-        let result = MermaidRender::render(&vec);
+        let result = MermaidRender::render(&vec, );
 
         println!("{:?}", result);
 
