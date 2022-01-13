@@ -35,13 +35,13 @@ pub mod parse_option;
 /// use modeling::render::PlantUmlRender;
 ///
 /// use modeling::file_filter::FileFilter;
-/// let classes = by_dir("src/",FileFilter::default(),ParseOption::default());
+/// let classes = by_dir("src/",FileFilter::default(), &ParseOption::default());
 /// let puml = PlantUmlRender::render(&classes);
 /// ```
-pub fn by_dir<P: AsRef<Path>>(path: P, filter: FileFilter, option: ParseOption) -> Vec<ClassInfo> {
+pub fn by_dir<P: AsRef<Path>>(path: P, filter: FileFilter, option: &ParseOption) -> Vec<ClassInfo> {
     let origin_files = files_from_path(path, filter);
 
-    by_files(origin_files, option)
+    by_files(origin_files, &option)
 }
 
 /// Returns Vec<ClassInfo> with the given files.
@@ -58,14 +58,14 @@ pub fn by_dir<P: AsRef<Path>>(path: P, filter: FileFilter, option: ParseOption) 
 ///
 /// let mut files = vec![];
 /// files.push("src/lib.rs".to_string());
-/// let classes = by_files(files, ParseOption::default());
+/// let classes = by_files(files, &ParseOption::default());
 /// let puml = PlantUmlRender::render(&classes);
 /// ```
-pub fn by_files(files: Vec<String>, option: ParseOption) -> Vec<ClassInfo> {
+pub fn by_files(files: Vec<String>, option: &ParseOption) -> Vec<ClassInfo> {
     let thread = count_thread(&files);
     let opt = build_opt(thread);
 
-    run_ctags(&opt, &files_by_thread(files, &opt), option)
+    run_ctags(&opt, &files_by_thread(files, &opt), &option)
 }
 
 fn count_thread(origin_files: &Vec<String>) -> usize {
@@ -77,7 +77,7 @@ fn count_thread(origin_files: &Vec<String>) -> usize {
     thread
 }
 
-fn run_ctags(opt: &Opt, files: &Vec<String>, option: ParseOption) -> Vec<ClassInfo> {
+fn run_ctags(opt: &Opt, files: &Vec<String>, option: &ParseOption) -> Vec<ClassInfo> {
     let outputs = CmdCtags::call(&opt, &files).unwrap();
     let mut iters = Vec::new();
     for o in &outputs {
@@ -90,7 +90,7 @@ fn run_ctags(opt: &Opt, files: &Vec<String>, option: ParseOption) -> Vec<ClassIn
     }
 
     let mut parser = CtagsParser::parse_str(iters);
-    parser.option = option;
+    parser.option = option.clone();
     let classes = parser.classes();
 
     classes
@@ -149,7 +149,7 @@ mod tests {
     #[test]
     fn should_run_struct_analysis() {
         let path = format!("{}", ctags_fixtures_dir().display());
-        let vec = by_dir(path, FileFilter::default(), ParseOption::default());
+        let vec = by_dir(path, FileFilter::default(), &ParseOption::default());
 
         assert_eq!(3, vec.len());
         let result = PlantUmlRender::render(&vec);
@@ -171,7 +171,7 @@ mod tests {
 
         let suffixes = vec!["store".to_string()];
 
-        let vec = by_dir(path, FileFilter::new(vec![], suffixes), ParseOption::default());
+        let vec = by_dir(path, FileFilter::new(vec![], suffixes), &ParseOption::default());
 
         assert_eq!(3, vec.len());
         let result = PlantUmlRender::render(&vec);
@@ -184,7 +184,7 @@ mod tests {
     #[test]
     fn should_render_mermaid() {
         let path = format!("{}", ctags_fixtures_dir().display());
-        let vec = by_dir(path, FileFilter::default(), ParseOption::default());
+        let vec = by_dir(path, FileFilter::default(), &ParseOption::default());
 
         assert_eq!(3, vec.len());
         let result = MermaidRender::render(&vec);

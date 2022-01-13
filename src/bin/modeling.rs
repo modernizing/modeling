@@ -34,12 +34,16 @@ struct Opts {
     // filter suffixes
     #[structopt(long, short, use_delimiter = true)]
     suffixes: Vec<String>,
+
+    #[structopt(short)]
+    field_only: bool,
 }
 
 impl Opts {
     pub fn to_parse_option(&self) -> ParseOption {
         ParseOption {
-            merge: self.merge
+            merge: self.merge,
+            field_only: self.field_only
         }
     }
 }
@@ -55,7 +59,7 @@ fn main() {
     let filter = FileFilter::new(opts.packages.clone(), opts.suffixes.clone());
 
     if !opts.by_modules {
-        output_all_in_one(opts, parse_option, filter);
+        output_all_in_one(opts, &parse_option, filter);
         return;
     }
 
@@ -73,13 +77,13 @@ fn main() {
 
 fn output_by_dir(opts: &Opts, parse_option: &ParseOption, filter: &FileFilter, dir: &DirEntry, x: &OsStr) {
     let dir_name = x.to_str().unwrap();
-    let classes = by_dir(dir.path(), filter.clone(), parse_option.clone());
+    let classes = by_dir(dir.path(), filter.clone(), parse_option);
     if classes.len() > 0 {
         output_file(&opts, &classes, dir_name)
     }
 }
 
-fn output_all_in_one(opts: Opts, parse_option: ParseOption, filter: FileFilter) {
+fn output_all_in_one(opts: Opts, parse_option: &ParseOption, filter: FileFilter) {
     let classes = by_dir(&opts.input, filter, parse_option);
     output_file(&opts, &classes, "modeling");
 }
