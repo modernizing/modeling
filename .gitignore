@@ -3,5 +3,5 @@ Cargo.lock
 .idea
 demo.puml
 tags
-modeling.puml
 *.puml
+temps/
