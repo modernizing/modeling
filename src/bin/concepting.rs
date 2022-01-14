@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use ignore::{DirEntry, WalkBuilder};
 use structopt::StructOpt;
 
@@ -46,7 +47,7 @@ fn main() {
     let parse_option = opts.to_parse_option();
     let filter = FileFilter::new(opts.packages.clone(), opts.suffixes.clone(), opts.grep.clone());
 
-    for result in WalkBuilder::new("./").max_depth(Some(1)).build() {
+    for result in WalkBuilder::new(opts.input).max_depth(Some(1)).build() {
         if let Ok(dir) = result {
             let path = dir.path();
             if path.is_dir() {
@@ -59,8 +60,25 @@ fn main() {
 }
 
 fn output_by_dir(parse_option: &ParseOption, filter: &FileFilter, dir: &DirEntry) {
+    let mut map: HashMap<String, u32> = HashMap::default();
     let classes = by_dir(dir.path(), filter.clone(), parse_option);
-    if classes.len() > 0 {
-        println!("{:?}", classes);
+    for class in classes {
+        let counter = map.entry(class.name).or_insert(0);
+        *counter += 1;
+
+        for method in class.methods {
+            let counter = map.entry(method.name).or_insert(0);
+            *counter += 1;
+        }
+
+        for member in class.members {
+            let counter = map.entry(member.name).or_insert(0);
+            *counter += 1;
+        }
     }
+
+    let mut hash_vec: Vec<(&String, &u32)> = map.iter().collect();
+    hash_vec.sort_by(|a, b| b.1.cmp(a.1));
+
+    println!("Sorted: {:?}", hash_vec);
 }
