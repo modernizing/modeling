@@ -66,7 +66,7 @@ fn main() {
         return;
     }
 
-    for result in WalkBuilder::new(opts.input).max_depth(Some(1)).build() {
+    for result in WalkBuilder::new(&opts.input).max_depth(Some(1)).build() {
         if let Ok(dir) = result {
             let path = dir.path();
             if path.is_dir() {
