@@ -4,6 +4,7 @@ extern crate prettytable;
 use std::collections::HashMap;
 use std::fs::File;
 use std::path::{Path, PathBuf};
+use log::info;
 
 use prettytable::{format, row, Table};
 use structopt::StructOpt;
@@ -41,10 +42,10 @@ impl ConceptOpts {
 }
 
 fn main() {
-    // 1. read words by class-words for map
-    // 2. output words relationship
-    // 3. count word frequency
+    env_logger::init();
     let opts: ConceptOpts = ConceptOpts::from_args();
+
+    info!("parse input {:?} with {:?}", &opts.input, &opts);
 
     let parse_option = opts.to_parse_option();
     let filter = FileFilter::new(opts.packages.clone(), opts.suffixes.clone(), opts.grep.clone());
@@ -55,10 +56,15 @@ fn main() {
 fn output_by_dir(parse_option: &ParseOption, filter: &FileFilter, dir: &Path) {
     let mut map: HashMap<String, u32> = HashMap::default();
     let classes = by_dir(dir, filter.clone(), parse_option);
+
+    info!("class counts: {:?}", &classes.len());
+
+    let mut methods_counts = 0;
     for class in classes {
         let counter = map.entry(class.name).or_insert(0);
         *counter += 1;
 
+        methods_counts = methods_counts + class.methods.len();
         for method in class.methods {
             let counter = map.entry(method.name).or_insert(0);
             *counter += 1;
@@ -70,6 +76,8 @@ fn output_by_dir(parse_option: &ParseOption, filter: &FileFilter, dir: &Path) {
         }
     }
 
+    info!("methods counts: {:?}", methods_counts);
+
     let mut hash_vec: Vec<(&String, &u32)> = map.iter().collect();
     hash_vec.sort_by(|a, b| b.1.cmp(a.1));
 
@@ -79,8 +87,8 @@ fn output_by_dir(parse_option: &ParseOption, filter: &FileFilter, dir: &Path) {
     for (key, value) in hash_vec {
         table.add_row(row![key, value.to_string()]);
     }
-
-    table.printstd();
+    //
+    // table.printstd();
 
     let out = File::create("output.csv").unwrap();
     table.to_csv(out).unwrap();

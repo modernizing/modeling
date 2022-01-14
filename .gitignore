@@ -6,3 +6,4 @@ tags
 *.puml
 temps/
 output.csv
+demo.log
