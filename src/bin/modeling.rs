@@ -38,7 +38,7 @@ struct Opts {
     #[structopt(short, long)]
     field_only: bool,
 
-    #[structopt(short, long)]
+    #[structopt(short, long, default_value = "")]
     grep: String,
 }
 

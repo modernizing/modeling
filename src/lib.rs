@@ -39,9 +39,7 @@ pub mod parse_option;
 /// let puml = PlantUmlRender::render(&classes, &ParseOption::default());
 /// ```
 pub fn by_dir<P: AsRef<Path>>(path: P, filter: FileFilter, option: &ParseOption) -> Vec<ClassInfo> {
-    let origin_files = files_from_path(path, filter);
-
-    by_files(origin_files, &option)
+    by_files(files_from_path(path, filter), &option)
 }
 
 /// Returns Vec<ClassInfo> with the given files.
@@ -108,6 +106,7 @@ fn files_from_path<P: AsRef<Path>>(path: P, filter: FileFilter) -> Vec<String> {
             }
         }
     }
+
     origin_files
 }
 
