@@ -5,3 +5,4 @@ demo.puml
 tags
 *.puml
 temps/
+output.csv

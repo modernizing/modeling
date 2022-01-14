@@ -1,5 +1,11 @@
+#[macro_use]
+extern crate prettytable;
+
 use std::collections::HashMap;
-use ignore::{DirEntry, WalkBuilder};
+use std::fs::File;
+use std::path::{Path, PathBuf};
+
+use prettytable::{format, row, Table};
 use structopt::StructOpt;
 
 use modeling::{by_dir, ParseOption};
@@ -40,28 +46,15 @@ fn main() {
     // 3. count word frequency
     let opts: ConceptOpts = ConceptOpts::from_args();
 
-    println!("Input path: {:?}", opts.input);
-    println!("packages: {:?}", opts.packages);
-    println!("suffixes: {:?}", opts.suffixes);
-
     let parse_option = opts.to_parse_option();
     let filter = FileFilter::new(opts.packages.clone(), opts.suffixes.clone(), opts.grep.clone());
 
-    for result in WalkBuilder::new(opts.input).max_depth(Some(1)).build() {
-        if let Ok(dir) = result {
-            let path = dir.path();
-            if path.is_dir() {
-                if let Some(_x) = path.file_name() {
-                    output_by_dir(&parse_option, &filter, &dir)
-                };
-            }
-        }
-    }
+    output_by_dir(&parse_option, &filter, &PathBuf::from(&opts.input));
 }
 
-fn output_by_dir(parse_option: &ParseOption, filter: &FileFilter, dir: &DirEntry) {
+fn output_by_dir(parse_option: &ParseOption, filter: &FileFilter, dir: &Path) {
     let mut map: HashMap<String, u32> = HashMap::default();
-    let classes = by_dir(dir.path(), filter.clone(), parse_option);
+    let classes = by_dir(dir, filter.clone(), parse_option);
     for class in classes {
         let counter = map.entry(class.name).or_insert(0);
         *counter += 1;
@@ -80,5 +73,15 @@ fn output_by_dir(parse_option: &ParseOption, filter: &FileFilter, dir: &DirEntry
     let mut hash_vec: Vec<(&String, &u32)> = map.iter().collect();
     hash_vec.sort_by(|a, b| b.1.cmp(a.1));
 
-    println!("Sorted: {:?}", hash_vec);
+    let mut table = Table::new();
+    table.set_format(*format::consts::FORMAT_NO_LINESEP_WITH_TITLE);
+
+    for (key, value) in hash_vec {
+        table.add_row(row![key, value.to_string()]);
+    }
+
+    table.printstd();
+
+    let out = File::create("output.csv").unwrap();
+    table.to_csv(out).unwrap();
 }
