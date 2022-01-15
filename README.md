@@ -22,14 +22,6 @@ language support:
  - [x] Golang
  - [x] Rust (basic)
 
-Todos:
-
- - [x] support for filter by file name
- - [x] support for ignore by files
- - [x] merge options
- - [ ] support ignore methods 
- - [ ] change to tree-sitter for parser
-
 ## Usage
 
 ### use binary
@@ -69,8 +61,6 @@ class Snake extends Animal {
 }
 
 @enduml
-
-Process finished with exit code 0
 ```
 
 License
