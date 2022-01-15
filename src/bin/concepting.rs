@@ -38,7 +38,7 @@ impl ConceptOpts {
     pub fn to_parse_option(&self) -> ParseOption {
         ParseOption {
             merge: false,
-            field_only: false
+            field_only: false,
         }
     }
 }
@@ -57,10 +57,14 @@ fn main() {
 
 fn output_by_dir(parse_option: &ParseOption, filter: &FileFilter, dir: &Path) {
     let classes = by_dir(dir, filter.clone(), parse_option);
+    let (word, text) = class_to_identify_map(&classes);
 
-    let map = class_to_identify_map(classes);
+    map_to_csv(word, "output_word.csv");
+    map_to_csv(text, "output_text.csv");
+}
 
-    let mut hash_vec: Vec<(&String, &u32)> = map.iter().collect();
+fn map_to_csv(word: HashMap<String, u32>, path: &str) {
+    let mut hash_vec: Vec<(&String, &u32)> = word.iter().collect();
     hash_vec.sort_by(|a, b| b.1.cmp(a.1));
 
     let mut table = Table::new();
@@ -69,35 +73,43 @@ fn output_by_dir(parse_option: &ParseOption, filter: &FileFilter, dir: &Path) {
     for (key, value) in hash_vec {
         table.add_row(row![key, value.to_string()]);
     }
-    //
 
-    let out = File::create("output.csv").unwrap();
+    let out = File::create(path).unwrap();
     table.to_csv(out).unwrap();
 }
 
-fn class_to_identify_map(classes: Vec<ClassInfo>) -> HashMap<String, u32> {
-    let mut map: HashMap<String, u32> = HashMap::default();
+fn class_to_identify_map(classes: &Vec<ClassInfo>) -> (HashMap<String, u32>, HashMap<String, u32>) {
+    let mut by_word: HashMap<String, u32> = HashMap::default();
+    let mut by_text: HashMap<String, u32> = HashMap::default();
     info!("class counts: {:?}", &classes.len());
 
     let mut methods_counts = 0;
-    for class in &classes {
-        count_it(&mut map, &class.name);
+    for class in classes {
+        count_words(&mut by_word, &class.name);
+        count_text(&mut by_text, &class.name);
 
         methods_counts = methods_counts + class.methods.len();
-        for method in class.methods {
-            count_it(&mut map, &method.name);
+        for method in &class.methods {
+            count_words(&mut by_word, &method.name);
+            count_text(&mut by_text, &method.name);
         }
 
-        for member in class.members {
-            count_it(&mut map, &member.name);
+        for member in &class.members {
+            count_words(&mut by_word, &member.name);
+            count_text(&mut by_text, &member.name);
         }
     }
 
     info!("methods counts: {:?}", methods_counts);
-    map
+    (by_word, by_text)
 }
 
-fn count_it(map: &mut HashMap<String, u32>, var: &str) {
+fn count_text(map: &mut HashMap<String, u32>, var: &str) {
+    let counter = map.entry(var.to_string()).or_insert(0);
+    *counter += 1;
+}
+
+fn count_words(map: &mut HashMap<String, u32>, var: &str) {
     for word in segment(var) {
         if STOP_WORDS.contains(&&**&word.to_lowercase()) {
             continue;
