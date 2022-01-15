@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 // from : https://github.com/bbalet/stopwords
 
-static STOP_WORDS: Vec<&str> = vec![
+const STOP_WORDS: &'static [&'static str] = &[
     "a",
     "about",
     "above",

@@ -9,7 +9,7 @@ use log::info;
 use prettytable::{format, row, Table};
 use structopt::StructOpt;
 
-use modeling::{by_dir, ParseOption};
+use modeling::{by_dir, ClassInfo, ParseOption};
 use modeling::file_filter::FileFilter;
 
 #[derive(StructOpt, Debug, PartialEq, Clone)]
@@ -54,29 +54,9 @@ fn main() {
 }
 
 fn output_by_dir(parse_option: &ParseOption, filter: &FileFilter, dir: &Path) {
-    let mut map: HashMap<String, u32> = HashMap::default();
     let classes = by_dir(dir, filter.clone(), parse_option);
 
-    info!("class counts: {:?}", &classes.len());
-
-    let mut methods_counts = 0;
-    for class in classes {
-        let counter = map.entry(class.name).or_insert(0);
-        *counter += 1;
-
-        methods_counts = methods_counts + class.methods.len();
-        for method in class.methods {
-            let counter = map.entry(method.name).or_insert(0);
-            *counter += 1;
-        }
-
-        for member in class.members {
-            let counter = map.entry(member.name).or_insert(0);
-            *counter += 1;
-        }
-    }
-
-    info!("methods counts: {:?}", methods_counts);
+    let map = class_to_identify_map(classes);
 
     let mut hash_vec: Vec<(&String, &u32)> = map.iter().collect();
     hash_vec.sort_by(|a, b| b.1.cmp(a.1));
@@ -88,8 +68,34 @@ fn output_by_dir(parse_option: &ParseOption, filter: &FileFilter, dir: &Path) {
         table.add_row(row![key, value.to_string()]);
     }
     //
-    // table.printstd();
 
     let out = File::create("output.csv").unwrap();
     table.to_csv(out).unwrap();
+}
+
+fn class_to_identify_map(classes: Vec<ClassInfo>) -> HashMap<String, u32> {
+    let mut map: HashMap<String, u32> = HashMap::default();
+    info!("class counts: {:?}", &classes.len());
+
+    let mut methods_counts = 0;
+    for class in classes {
+        count_it(&mut map, class.name);
+
+        methods_counts = methods_counts + class.methods.len();
+        for method in class.methods {
+            count_it(&mut map, method.name);
+        }
+
+        for member in class.members {
+            count_it(&mut map, member.name);
+        }
+    }
+
+    info!("methods counts: {:?}", methods_counts);
+    map
+}
+
+fn count_it(map: &mut HashMap<String, u32>, var: String) {
+    let counter = map.entry(var).or_insert(0);
+    *counter += 1;
 }
