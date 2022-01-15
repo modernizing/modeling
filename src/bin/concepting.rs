@@ -11,6 +11,8 @@ use structopt::StructOpt;
 
 use modeling::{by_dir, ClassInfo, ParseOption};
 use modeling::file_filter::FileFilter;
+use modeling::segment::segment;
+use modeling::segment::stop_words::{STOP_WORDS, TECH_STOP_WORDS};
 
 #[derive(StructOpt, Debug, PartialEq, Clone)]
 #[structopt(name = "basic")]
@@ -78,16 +80,16 @@ fn class_to_identify_map(classes: Vec<ClassInfo>) -> HashMap<String, u32> {
     info!("class counts: {:?}", &classes.len());
 
     let mut methods_counts = 0;
-    for class in classes {
-        count_it(&mut map, class.name);
+    for class in &classes {
+        count_it(&mut map, &class.name);
 
         methods_counts = methods_counts + class.methods.len();
         for method in class.methods {
-            count_it(&mut map, method.name);
+            count_it(&mut map, &method.name);
         }
 
         for member in class.members {
-            count_it(&mut map, member.name);
+            count_it(&mut map, &member.name);
         }
     }
 
@@ -95,7 +97,17 @@ fn class_to_identify_map(classes: Vec<ClassInfo>) -> HashMap<String, u32> {
     map
 }
 
-fn count_it(map: &mut HashMap<String, u32>, var: String) {
-    let counter = map.entry(var).or_insert(0);
-    *counter += 1;
+fn count_it(map: &mut HashMap<String, u32>, var: &str) {
+    for word in segment(var) {
+        if STOP_WORDS.contains(&&**&word.to_lowercase()) {
+            continue;
+        }
+
+        if TECH_STOP_WORDS.contains(&&**&word.to_lowercase()) {
+            continue;
+        }
+
+        let counter = map.entry(word).or_insert(0);
+        *counter += 1;
+    }
 }
