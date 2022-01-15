@@ -54,10 +54,6 @@ impl Opts {
 fn main() {
     let opts: Opts = Opts::from_args();
 
-    println!("Input path: {:?}", opts.input);
-    println!("packages: {:?}", opts.packages);
-    println!("suffixes: {:?}", opts.suffixes);
-
     let parse_option = opts.to_parse_option();
     let filter = FileFilter::new(opts.packages.clone(), opts.suffixes.clone(), opts.grep.clone());
 

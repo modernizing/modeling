@@ -1,4 +1,5 @@
 pub mod camelcase_tok;
+pub mod stop_words;
 
 use tokenizers::{OffsetReferential, OffsetType, PreTokenizedString, PreTokenizer};
 use crate::segment::camelcase_tok::CamelCaseTok;
