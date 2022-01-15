@@ -4,12 +4,10 @@ pub mod camelcase_tok;
 #[cfg(test)]
 mod tests {
     use tokenizers::{OffsetReferential, OffsetType, PreTokenizedString, PreTokenizer};
-    use tokenizers::tokenizer::{Tokenizer};
     use crate::segment::camelcase_tok::CamelCaseTok;
 
     #[test]
     fn should_segmentation() {
-
         let pretok = CamelCaseTok::default();
 
         let mut pretokenized = PreTokenizedString::from("HierarchyId");
@@ -21,6 +19,6 @@ mod tests {
             .map(|(s, _o, _)| (s))
             .collect::<Vec<&str>>();
 
-        println!("{:?}", vec);
+        assert_eq!(vec!["Hierarchy", "Id"], vec);
     }
 }

@@ -215,15 +215,4 @@ mod tests {
         assert!(result.contains("Animal <|-- Horse"));
         assert!(result.contains("Animal <|-- Snake"));
     }
-
-    #[test]
-    fn should_segmentation() {
-        use tokenizers::tokenizer::{Result, Tokenizer};
-
-        // tokenizers::PreTokenizer
-
-        let tokenizer = Tokenizer::from_pretrained("bert-base-cased", None).unwrap();
-        let encoding = tokenizer.encode("HierarchyId", false).unwrap();
-        println!("{:?}", encoding.get_tokens());
-    }
 }
