@@ -21,6 +21,7 @@ pub mod render;
 pub mod coco_struct;
 pub mod file_filter;
 pub mod parse_option;
+pub mod segment;
 
 /// Returns Vec<ClassInfo> with the given path.
 ///
@@ -213,5 +214,16 @@ mod tests {
         assert!(result.contains("class Animal"));
         assert!(result.contains("Animal <|-- Horse"));
         assert!(result.contains("Animal <|-- Snake"));
+    }
+
+    #[test]
+    fn should_segmentation() {
+        use tokenizers::tokenizer::{Result, Tokenizer};
+
+        // tokenizers::PreTokenizer
+
+        let tokenizer = Tokenizer::from_pretrained("bert-base-cased", None).unwrap();
+        let encoding = tokenizer.encode("HierarchyId", false).unwrap();
+        println!("{:?}", encoding.get_tokens());
     }
 }
