@@ -63,6 +63,16 @@ class Snake extends Animal {
 @enduml
 ```
 
+## Samples
+
+to image: `plantuml modeling.puml modeling.svg -tsvg`
+
+### MVC only
+
+```
+modeling --input=/youpath/ --field-only --without-parent --grep ".*Service|.*Controller|.*Repository"
+```
+
 License
 ---
 
