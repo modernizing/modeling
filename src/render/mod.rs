@@ -1,6 +1,6 @@
 pub use mermaid_render::MermaidRender;
 pub use plantuml_render::PlantUmlRender;
-use crate::ClassInfo;
+use crate::{ClassInfo, ParseOption};
 use std::collections::HashMap;
 
 pub mod plantuml_render;
@@ -28,21 +28,32 @@ pub fn render_method(clazz: &&ClassInfo, dep_map: &mut HashMap<String, String>, 
     methods
 }
 
-pub fn render_member(clazz: &&ClassInfo, dep_map: &mut HashMap<String, String>, space: &str) -> Vec<String> {
+pub fn render_member(clazz: &&ClassInfo, dep_map: &mut HashMap<String, String>, space: &str, parse_option: &ParseOption) -> Vec<String> {
     let mut members = vec![];
     for member in &clazz.members {
         if member.data_type.is_empty() {
             members.push(format!("{}  {}{}\n", space, member.access, member.name))
         } else {
+
+            let mut data_type: &str = &member.data_type;
+            if parse_option.remove_impl_suffix && data_type.len() > 2 && data_type.starts_with("I") {
+                // ex. `IRepository` will check is R uppercase
+                let char = data_type.chars().nth(1).unwrap();
+                if char.to_uppercase().to_string() == char.to_string() {
+                    data_type = &data_type[1..data_type.len()];
+                }
+            }
+
+
             members.push(format!(
                 "{}  {} {} {}\n",
-                space, member.access, member.data_type, member.name
+                space, member.access, data_type, member.name
             ));
 
             if member.pure_data_type.len() > 0 {
                 dep_map.insert(member.pure_data_type.clone(), clazz.name.clone());
             } else {
-                dep_map.insert(member.data_type.clone(), clazz.name.clone());
+                dep_map.insert(data_type.to_string(), clazz.name.clone());
             }
         }
     }
@@ -145,5 +156,12 @@ mod tests {
         let str = PlantUmlRender::render(&classes, &ParseOption::default());
         assert_eq!(true, str.contains("Demo -- Demo2"));
         assert_eq!(false, str.contains("Demo -- String"));
+    }
+
+    #[test]
+    fn should_char() {
+        let str = "IRepo";
+        let char = str.chars().nth(1).unwrap();
+        assert_eq!('R', char);
     }
 }

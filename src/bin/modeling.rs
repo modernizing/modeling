@@ -42,6 +42,10 @@ struct Opts {
     #[structopt(short, long)]
     without_parent: bool,
 
+    // if class start with IRepository will remove I for field
+    #[structopt(short, long)]
+    remove_impl_suffix: bool,
+
     #[structopt(short, long, default_value = "")]
     grep: String,
 }
@@ -51,7 +55,8 @@ impl Opts {
         ParseOption {
             merge: self.merge,
             field_only: self.field_only,
-            without_parent: self.without_parent
+            without_parent: self.without_parent,
+            remove_impl_suffix: self.remove_impl_suffix
         }
     }
 }

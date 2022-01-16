@@ -4,7 +4,8 @@ use serde::{Deserialize, Serialize};
 pub struct ParseOption {
     pub merge: bool,
     pub field_only: bool,
-    pub without_parent: bool
+    pub without_parent: bool,
+    pub remove_impl_suffix: bool,
 }
 
 impl Default for ParseOption {
@@ -12,7 +13,8 @@ impl Default for ParseOption {
         ParseOption {
             merge: false,
             field_only: false,
-            without_parent: false
+            without_parent: false,
+            remove_impl_suffix: false
         }
     }
 }
