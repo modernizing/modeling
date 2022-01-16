@@ -38,6 +38,10 @@ struct Opts {
     #[structopt(short, long)]
     field_only: bool,
 
+    // without parent
+    #[structopt(short, long)]
+    without_parent: bool,
+
     #[structopt(short, long, default_value = "")]
     grep: String,
 }
@@ -46,7 +50,8 @@ impl Opts {
     pub fn to_parse_option(&self) -> ParseOption {
         ParseOption {
             merge: self.merge,
-            field_only: self.field_only
+            field_only: self.field_only,
+            without_parent: self.without_parent
         }
     }
 }

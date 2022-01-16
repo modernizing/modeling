@@ -28,7 +28,7 @@ impl PlantUmlRender {
 
             let content = format!("{}{}", members.join(""), methods.join(""));
             let class_field = clazz.name.clone();
-            if clazz.parents.len() > 0 {
+            if clazz.parents.len() > 0 && !parse_option.without_parent {
                 for parent in &clazz.parents {
                     rendered.push(format!("{} <|-- {}", parent, clazz.name));
                 }

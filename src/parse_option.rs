@@ -4,13 +4,15 @@ use serde::{Deserialize, Serialize};
 pub struct ParseOption {
     pub merge: bool,
     pub field_only: bool,
+    pub without_parent: bool
 }
 
 impl Default for ParseOption {
     fn default() -> Self {
         ParseOption {
             merge: false,
-            field_only: false
+            field_only: false,
+            without_parent: false
         }
     }
 }

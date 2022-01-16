@@ -28,7 +28,7 @@ impl MermaidRender {
 
             let content = format!("{}{}", members.join(""), methods.join(""));
             let class_field = clazz.name.clone();
-            if clazz.parents.len() > 0 {
+            if clazz.parents.len() > 0 && !parse_option.without_parent {
                 rendered.push(format!("{}{} <|-- {}", space, clazz.parents.join(","), clazz.name));
             }
 
