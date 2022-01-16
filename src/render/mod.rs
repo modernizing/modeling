@@ -4,6 +4,7 @@ use crate::{ClassInfo, ParseOption};
 use std::collections::HashMap;
 
 pub mod plantuml_render;
+pub mod graphviz_render;
 pub mod mermaid_render;
 
 

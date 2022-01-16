@@ -7,6 +7,7 @@ use modeling::{by_dir, ClassInfo, ParseOption};
 use modeling::file_filter::FileFilter;
 use modeling::render::{MermaidRender, PlantUmlRender};
 use std::ffi::OsStr;
+use modeling::render::graphviz_render::GraphvizRender;
 
 #[derive(StructOpt, Debug, PartialEq, Clone)]
 #[structopt(name = "basic")]
@@ -109,6 +110,10 @@ fn output_file(opts: &Opts, classes: &Vec<ClassInfo>, name: &str) {
             let uml = PlantUmlRender::render(&classes, &parse_option);
             let file_name = format!("{}.puml", name);
             let _ = fs::write(file_name, uml);
+
+            let graph = GraphvizRender::render(&classes, &parse_option);
+            let file_name = format!("{}.dot", name);
+            let _ = fs::write(file_name, graph);
         }
     }
 }
