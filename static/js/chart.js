@@ -235,7 +235,7 @@ function renderCircle(originData) {
     var colorin = "#00f",
         colorout = "#f00",
         colornone = "#ccc",
-        width = 900,
+        width = 1200,
         radius = width / 2,
         line = d3.lineRadial()
             .curve(d3.curveBundle.beta(0.8))
@@ -252,7 +252,7 @@ function renderCircle(originData) {
 
     const node = svg.append("g")
         .attr("font-family", "sans-serif")
-        .attr("font-size", 10)
+        .attr("font-size", 12)
         .selectAll("g")
         .data(root.leaves())
         .join("g")
@@ -487,7 +487,7 @@ if (window.location.href.includes("demo")) {
         renderPacking(data)
     });
 } else {
-    d3.json("output.json").then(function (data) {
+    d3.json("../output.json").then(function (data) {
         renderVertical(data)
         renderCircle(data)
         renderPacking(data)
