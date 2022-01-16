@@ -5,7 +5,6 @@ use serde::{Deserialize, Serialize};
 
 use crate::coco_struct::ClassInfo;
 use crate::ParseOption;
-use crate::render::{render_member, render_method};
 
 /// Render classes info to string
 pub struct GraphvizRender;
@@ -25,11 +24,13 @@ pub struct DNode {
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct DLink {
     source: String,
-    target: String
+    target: String,
+    value: usize,
+    pub package: String,
 }
 
 impl GraphvizRender {
-    pub fn render(classes: &Vec<ClassInfo>, parse_option: &ParseOption) -> String {
+    pub fn render(classes: &Vec<ClassInfo>, _parse_option: &ParseOption) -> String {
         let mut sub_graphs_map: HashMap<String, Vec<String>> = HashMap::default();
         let mut deps: Vec<String> = vec![];
         let mut data = DData::default();
@@ -73,9 +74,12 @@ impl GraphvizRender {
                 })
             }
 
-            let _ = render_member(&clazz, &mut dep_map, "", parse_option);
-            if !parse_option.field_only {
-                let _ = render_method(&clazz, &mut dep_map, "");
+            for member in &clazz.members {
+                dep_map.insert(member.pure_data_type.clone(), clazz.name.clone());
+            }
+
+            for method in &clazz.methods {
+                dep_map.insert(method.return_type.clone(), clazz.name.clone());
             }
 
             for (callee, current_clz) in dep_map {
@@ -91,7 +95,9 @@ impl GraphvizRender {
 
                 data.links.push(DLink {
                     source: current_clz,
-                    target: callee
+                    target: callee,
+                    package: clazz.name.clone(),
+                    value: 1
                 })
             }
         }

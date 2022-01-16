@@ -46,8 +46,9 @@ impl MethodInfo {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ClassInfo {
-    pub name: String,
     pub id: i32,
+    pub name: String,
+    pub package: String,
     pub file: String,
     pub lang: String,
     pub parents: Vec<String>,
@@ -58,8 +59,9 @@ pub struct ClassInfo {
 impl ClassInfo {
     pub fn new(class_name: &str) -> Self {
         ClassInfo {
-            name: class_name.to_string(),
             id: 0,
+            name: class_name.to_string(),
+            package: "".to_string(),
             file: "".to_string(),
             lang: "".to_string(),
             parents: vec![],

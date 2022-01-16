@@ -49,7 +49,7 @@ function renderVertical(data) {
         .join("g")
         .attr("transform", d => `translate(${margin.left},${d.y = y(d.id)})`)
         .call(g => g.append("text")
-            .attr("x", -6)
+            .attr("x", d => d.x < Math.PI ? 6 : -6)
             .attr("dy", "0.35em")
             .attr("fill", d => d3.lab(color(d.group)).darker(2))
             .text(d => d.id))

@@ -254,10 +254,14 @@ impl CtagsParser {
 
     fn lookup_class_from_map(&mut self, line: &str) -> Option<&mut ClassInfo> {
         let mut class_name = "".to_string();
+
+        #[allow(unused_assignments)]
+        let mut package = "".to_string();
         if let Some(capts) = RE_CLASS.captures(line) {
             class_name = capts["class_name"].to_string();
         }
 
+        package = class_name.clone();
         let split = class_name.split(".");
         if let Some(last) = split.last() {
             class_name = last.to_string();
@@ -277,6 +281,7 @@ impl CtagsParser {
             }
         };
 
+        clazz.package = package;
         Some(clazz)
     }
 
