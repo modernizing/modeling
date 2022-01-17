@@ -83,6 +83,8 @@ function renderVertical(data) {
             path.classed("primary", l => l.source === d || l.target === d).filter(".primary").raise();
 
             var result = "<h3>" + d.id + "</h3>";
+            result += "usedby count:" + d.targetLinks.length + "<br>";
+            result += "use count:" + d.sourceLinks.length + "<br>";
             for (let linkElement of d.targetLinks) {
                 result += "usedby: " + linkElement.source.id + "<br>"
             }
@@ -361,8 +363,8 @@ function renderPacking(originData) {
     var dMap = {}
 
     for (let node of originData.nodes) {
-        dMap[node.id] = {
-            name: "root." + node.id,
+        dMap[node.package] = {
+            name: "root." + node.package,
             value: 1
         }
     }
@@ -372,12 +374,12 @@ function renderPacking(originData) {
             continue
         }
         if (!dMap[link.source]) {
-            dMap[link.source] = {
-                name: "root." + link.source,
+            dMap[link.package] = {
+                name: "root." + link.package,
                 value: 1
             }
         } else {
-            dMap[link.source].value++
+            dMap[link.package].value++
         }
     }
 
