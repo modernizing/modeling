@@ -27,12 +27,12 @@ impl MermaidRender {
             }
 
             let content = format!("{}{}", members.join(""), methods.join(""));
-            let class_field = clazz.name.clone();
+            let class_name = &clazz.name;
             if clazz.parents.len() > 0 && !parse_option.without_parent {
-                rendered.push(format!("{}{} <|-- {}", space, clazz.parents.join(","), clazz.name));
+                rendered.push(format!("{}{} <|-- {}", space, clazz.parents.join(","), class_name));
             }
 
-            rendered.push(format!("{}class {} {{\n{}{}}}", space, class_field, content, space));
+            rendered.push(format!("{}class {} {{\n{}{}}}", space, class_name, content, space));
 
             for (callee, current_clz) in dep_map {
                 if callee == current_clz {
