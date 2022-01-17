@@ -207,11 +207,10 @@ impl CtagsParser {
                 if let Some(capts) = RUST_TYPE.captures(line) {
                     data_type = (&capts["datatype"]).to_string();
 
-                    println!("{:?}", capts);
                     if &capts["access"] == "pub" {
-                        access = "public"
+                        access = "+"
                     } else {
-                        access = "private"
+                        access = "-"
                     }
 
                     if let Some(ty) = PURE_RUST_TYPE.captures(data_type.as_str()) {
@@ -384,7 +383,7 @@ name	src/coco_struct.rs	/^    pub name: String,$/;\"	field	line:22	language:Rust
 
         assert_eq!(1, classes.len());
         assert_eq!("String", classes[0].members[0].data_type);
-        assert_eq!("public", classes[0].members[0].access);
+        assert_eq!("+", classes[0].members[0].access);
     }
 
     #[test]
