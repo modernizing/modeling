@@ -40,7 +40,8 @@ impl ConceptOpts {
             merge: false,
             field_only: false,
             without_parent: false,
-            remove_impl_suffix: false
+            remove_impl_suffix: false,
+            inline_id_suffix: false
         }
     }
 }

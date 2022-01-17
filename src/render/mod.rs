@@ -35,9 +35,10 @@ pub fn render_member(clazz: &&ClassInfo, dep_map: &mut HashMap<String, String>, 
         if member.data_type.is_empty() {
             members.push(format!("{}  {}{}\n", space, member.access, member.name))
         } else {
+            let id = "Id";
             let mut data_type: &str = &member.data_type;
             if parse_option.remove_impl_suffix {
-                if data_type.len() > "id".len() && data_type.starts_with("I") {
+                if data_type.len() > id.len() && data_type.starts_with("I") {
                     // ex. `IRepository` will check is R uppercase
                     let char = data_type.chars().nth(1).unwrap();
                     if char.to_uppercase().to_string() == char.to_string() {
@@ -48,15 +49,11 @@ pub fn render_member(clazz: &&ClassInfo, dep_map: &mut HashMap<String, String>, 
 
             if parse_option.inline_id_suffix {
                 // - int UserId to be `User UserId`
-                if member.name.ends_with("Id") && member.name.len() > "id".len() {
-                    let member_name = &member.name[0..(member.name.len() - "Id".len())];
+                if member.name.ends_with(id) && member.name.len() > id.len() {
+                    let member_name = &member.name[0..(member.name.len() - id.len())];
                     if class_map.get(member_name).is_some() {
                         data_type = member_name;
                     }
-                    // todo: check for auto id
-                    // else {
-                    //     class_map.insert(member_name.to_string(), true);
-                    // }
                 }
             }
 
