@@ -24,7 +24,7 @@ struct Opts {
     #[structopt(short, long, default_value = ".")]
     input: String,
 
-    /// mermaid or puml
+    /// support: puml, mermaid, graphviz with json
     #[structopt(short, long, default_value = "puml")]
     output_type: String,
 
@@ -106,14 +106,15 @@ fn output_file(opts: &Opts, classes: &Vec<ClassInfo>, name: &str) {
             let file_name = format!("{}.mermaid", name);
             let _ = fs::write(file_name, uml);
         }
+        "graphviz" => {
+            let graph = GraphvizRender::render(&classes, &parse_option);
+            let file_name = format!("{}.dot", name);
+            let _ = fs::write(file_name, graph);
+        }
         &_ => {
             let uml = PlantUmlRender::render(&classes, &parse_option);
             let file_name = format!("{}.puml", name);
             let _ = fs::write(file_name, uml);
-
-            let graph = GraphvizRender::render(&classes, &parse_option);
-            let file_name = format!("{}.dot", name);
-            let _ = fs::write(file_name, graph);
         }
     }
 }
