@@ -63,7 +63,7 @@ lazy_static! {
     static ref RE_TYPE: Regex =
         Regex::new(r"/\^([ ]*)(?P<datatype>[A-Za-z0-9_.]+)([^A-Za-z0-9_]+)(.*)\$/").unwrap();
     static ref RUST_TYPE: Regex = Regex::new(
-        r"/\^([ ]*)([A-Za-z0-9_.]+)(\t|\s)([A-Za-z0-9_.]+)\s*:(\t|\s)*(?P<datatype>[A-Za-z0-9_.<>]+)"
+        r"/\^([ ]*)(?P<access>[A-Za-z0-9_.]+)(\t|\s)([A-Za-z0-9_.]+)\s*:(\t|\s)*(?P<datatype>[A-Za-z0-9_.<>]+)"
     ).unwrap();
     static ref PURE_RUST_TYPE: Regex = Regex::new(
         r"((Vec|Option|<)*)(?P<datatype>[A-Za-z0-9_]+)>*"
@@ -206,6 +206,13 @@ impl CtagsParser {
             "Rust" => {
                 if let Some(capts) = RUST_TYPE.captures(line) {
                     data_type = (&capts["datatype"]).to_string();
+
+                    println!("{:?}", capts);
+                    if &capts["access"] == "pub" {
+                        access = "public"
+                    } else {
+                        access = "private"
+                    }
 
                     if let Some(ty) = PURE_RUST_TYPE.captures(data_type.as_str()) {
                         pure_data_type = (&ty["datatype"]).to_string();
@@ -377,6 +384,7 @@ name	src/coco_struct.rs	/^    pub name: String,$/;\"	field	line:22	language:Rust
 
         assert_eq!(1, classes.len());
         assert_eq!("String", classes[0].members[0].data_type);
+        assert_eq!("public", classes[0].members[0].access);
     }
 
     #[test]
