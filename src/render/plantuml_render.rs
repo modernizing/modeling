@@ -20,7 +20,7 @@ impl PlantUmlRender {
         for clazz in classes {
             let mut dep_map: HashMap<String, String> = HashMap::default();
 
-            let members = render_member(&clazz, &mut dep_map, "", parse_option);
+            let members = render_member(&clazz, &mut dep_map, "", parse_option, &mut class_map);
             let mut methods= vec![];
             if !parse_option.field_only {
                 methods = render_method(&clazz, &mut dep_map, "");

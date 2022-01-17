@@ -19,6 +19,7 @@ pub struct DData {
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct DNode {
     id: String,
+    package: String,
     group: usize
 }
 
@@ -45,38 +46,43 @@ impl GraphvizRender {
             let mut dep_map: HashMap<String, String> = HashMap::default();
 
             // todo: add parameter for mvc
-            if clazz.name.ends_with("Repository") {
+            let class_name = &clazz.name;
+            if class_name.ends_with("Repository") {
                 let graph = sub_graphs_map.entry("Repository".to_string()).or_insert(vec![]);
-                graph.push(clazz.name.to_string());
+                graph.push(class_name.to_string());
 
                 data.nodes.push(DNode {
-                    id: clazz.name.to_string(),
+                    id: class_name.to_string(),
+                    package: clazz.package.to_string(),
                     group: 1
                 })
-            } else if clazz.name.ends_with("Controller") {
+            } else if class_name.ends_with("Controller") {
                 let graph = sub_graphs_map.entry("Controller".to_string()).or_insert(vec![]);
-                graph.push(clazz.name.to_string());
+                graph.push(class_name.to_string());
 
                 data.nodes.push(DNode {
-                    id: clazz.name.to_string(),
+                    id: class_name.to_string(),
+                    package: clazz.package.to_string(),
                     group: 2
                 })
-            } else if clazz.name.ends_with("Service") || clazz.name.ends_with("ServiceImpl") {
+            } else if class_name.ends_with("Service") || class_name.ends_with("ServiceImpl") {
                 let graph = sub_graphs_map.entry("Service".to_string()).or_insert(vec![]);
-                graph.push(clazz.name.to_string());
+                graph.push(class_name.to_string());
 
                 data.nodes.push(DNode {
-                    id: clazz.name.to_string(),
+                    id: class_name.to_string(),
+                    package: clazz.package.to_string(),
                     group: 3
                 })
             } else {
                 data.nodes.push(DNode {
-                    id: clazz.name.to_string(),
+                    id: class_name.to_string(),
+                    package: clazz.package.to_string(),
                     group: 4
                 })
             }
 
-            let _ = render_member(&clazz, &mut dep_map, "", parse_option);
+            let _ = render_member(&clazz, &mut dep_map, "", parse_option, &mut class_map);
             if !parse_option.field_only {
                 let _ = render_method(&clazz, &mut dep_map, "");
             }

@@ -33,15 +33,18 @@ struct Opts {
     /// only load field in methods
     #[structopt(short, long)]
     field_only: bool,
-    /// without class inheritance
-    #[structopt(short, long)]
-    without_parent: bool,
-    /// if class's field start with `IRepository` will become `Repository`
-    #[structopt(short, long)]
-    remove_impl_suffix: bool,
-    /// by grep regex rules: for example:
+    /// by grep regex rules: for example: `.*Service`
     #[structopt(short, long, default_value = "")]
     grep: String,
+    /// without class inheritance
+    #[structopt(long)]
+    without_parent: bool,
+    /// if class's prop start with `IRepository` will become `Repository`
+    #[structopt(long)]
+    remove_impl_suffix: bool,
+    /// if class's prop end with Id and class in list, will replace `int` type to `xxClass`
+    #[structopt(long)]
+    inline_id_suffix: bool,
 }
 
 impl Opts {
@@ -50,7 +53,8 @@ impl Opts {
             merge: self.merge,
             field_only: self.field_only,
             without_parent: self.without_parent,
-            remove_impl_suffix: self.remove_impl_suffix
+            remove_impl_suffix: self.remove_impl_suffix,
+            inline_id_suffix: self.inline_id_suffix,
         }
     }
 }
