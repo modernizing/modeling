@@ -240,10 +240,6 @@ impl CtagsParser {
         }
     }
 
-    pub fn datatype_supported(lang: &str) -> bool {
-        return lang == "C++" || lang == "C#" || lang == "Java";
-    }
-
     pub fn remove_keywords(mut line: String) -> String {
         for keyword in TYPE_KEYWORDS.iter() {
             line = line.replacen(keyword, "", 1)
@@ -257,8 +253,8 @@ impl CtagsParser {
 
         #[allow(unused_assignments)]
         let mut package = "".to_string();
-        if let Some(capts) = RE_CLASS.captures(line) {
-            class_name = capts["class_name"].to_string();
+        if let Some(captures) = RE_CLASS.captures(line) {
+            class_name = captures["class_name"].to_string();
         }
 
         package = class_name.clone();
