@@ -125,3 +125,18 @@ impl GraphvizRender {
         )
     }
 }
+
+
+#[cfg(test)]
+mod tests {
+    use crate::{ClassInfo, ParseOption};
+    use crate::render::graphviz_render::GraphvizRender;
+
+    #[test]
+    fn should_render_graphviz() {
+        let info = ClassInfo::new("WorldServiceImpl");
+        let clzs = vec![info];
+        let string = GraphvizRender::render(&clzs, &ParseOption::default());
+        assert_eq!("digraph G {\n  compound=true;\n  ranksep=1\n  node[shape=record]\n\n  subgraph cluster_Service{\n    WorldServiceImpl\n    }\n\n}", string);
+    }
+}

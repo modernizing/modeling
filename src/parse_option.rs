@@ -1,22 +1,10 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct ParseOption {
     pub merge: bool,
     pub field_only: bool,
     pub without_parent: bool,
     pub without_impl_suffix: bool,
     pub inline_id_suffix: bool,
-}
-
-impl Default for ParseOption {
-    fn default() -> Self {
-        ParseOption {
-            merge: false,
-            field_only: false,
-            without_parent: false,
-            without_impl_suffix: false,
-            inline_id_suffix: false
-        }
-    }
 }
