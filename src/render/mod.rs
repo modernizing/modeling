@@ -8,7 +8,7 @@ pub mod graphviz_render;
 pub mod mermaid_render;
 
 
-pub fn render_method(clazz: &&ClassInfo, dep_map: &mut HashMap<String, String>, space: &str) -> Vec<String> {
+pub fn render_method(clazz: &ClassInfo, dep_map: &mut HashMap<String, String>, space: &str) -> Vec<String> {
     let mut methods = vec![];
     for method in &clazz.methods {
         if method.return_type.is_empty() {
@@ -29,7 +29,7 @@ pub fn render_method(clazz: &&ClassInfo, dep_map: &mut HashMap<String, String>, 
     methods
 }
 
-pub fn render_member(clazz: &&ClassInfo, dep_map: &mut HashMap<String, String>, space: &str, parse_option: &ParseOption, class_map: &mut HashMap<String, bool>) -> Vec<String> {
+pub fn render_member(clazz: &ClassInfo, dep_map: &mut HashMap<String, String>, space: &str, parse_option: &ParseOption, class_map: &mut HashMap<String, bool>) -> Vec<String> {
     let mut members = vec![];
     for member in &clazz.members {
         if member.data_type.is_empty() {
