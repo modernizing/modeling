@@ -53,9 +53,7 @@ impl GraphvizRender {
                     id: clazz.name.to_string(),
                     group: 1
                 })
-            }
-
-            if clazz.name.ends_with("Controller") {
+            } else if clazz.name.ends_with("Controller") {
                 let graph = sub_graphs_map.entry("Controller".to_string()).or_insert(vec![]);
                 graph.push(clazz.name.to_string());
 
@@ -63,15 +61,18 @@ impl GraphvizRender {
                     id: clazz.name.to_string(),
                     group: 2
                 })
-            }
-
-            if clazz.name.ends_with("Service") {
+            } else if clazz.name.ends_with("Service") || clazz.name.ends_with("ServiceImpl") {
                 let graph = sub_graphs_map.entry("Service".to_string()).or_insert(vec![]);
                 graph.push(clazz.name.to_string());
 
                 data.nodes.push(DNode {
                     id: clazz.name.to_string(),
                     group: 3
+                })
+            } else {
+                data.nodes.push(DNode {
+                    id: clazz.name.to_string(),
+                    group: 4
                 })
             }
 
