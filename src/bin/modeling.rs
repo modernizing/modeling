@@ -15,38 +15,31 @@ struct Opts {
     /// merge for same method name
     #[structopt(short, long)]
     merge: bool,
-
     /// multiple modules
     #[structopt(short, long)]
     by_modules: bool,
-
     /// input dir
     #[structopt(short, long, default_value = ".")]
     input: String,
-
     /// support: puml, mermaid, graphviz with json
     #[structopt(short, long, default_value = "puml")]
     output_type: String,
-
-    // filter dir
+    /// filter by packages, like: `com.phodal.modeling`
     #[structopt(long, short, use_delimiter = true)]
     packages: Vec<String>,
-
-    // filter suffixes
+    /// filter by suffixes, like: `java` for .java file
     #[structopt(long, short, use_delimiter = true)]
     suffixes: Vec<String>,
-
+    /// only load field in methods
     #[structopt(short, long)]
     field_only: bool,
-
-    // without parent
+    /// without class inheritance
     #[structopt(short, long)]
     without_parent: bool,
-
-    // if class start with IRepository will remove I for field
+    /// if class's field start with `IRepository` will become `Repository`
     #[structopt(short, long)]
     remove_impl_suffix: bool,
-
+    /// by grep regex rules: for example:
     #[structopt(short, long, default_value = "")]
     grep: String,
 }

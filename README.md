@@ -68,7 +68,6 @@ class Snake extends Animal {
 - Modeling, create `model from source code by `ctags`.
 - Concepting, generate concepts from method name & class name.
 - Diffing, diff two different file.
-- Graphing, generate `graphviz` and visual data.
 
 ## Samples
 
