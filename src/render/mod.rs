@@ -37,7 +37,7 @@ pub fn render_member(clazz: &&ClassInfo, dep_map: &mut HashMap<String, String>, 
         } else {
             let id = "Id";
             let mut data_type: &str = &member.data_type;
-            if parse_option.remove_impl_suffix {
+            if parse_option.without_impl_suffix {
                 if data_type.len() > id.len() && data_type.starts_with("I") {
                     // ex. `IRepository` will check is R uppercase
                     let char = data_type.chars().nth(1).unwrap();

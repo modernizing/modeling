@@ -63,7 +63,7 @@ modeling --input=/youpath/ --field-only --without-parent --grep ".*Service|.*Con
 with `--output-type=graphviz`
 
 ```bash
-modeling --input=/youpath  --field-only -o graphviz --remove-impl-suffix
+modeling --input=/youpath  --field-only -o graphviz --without-impl-suffix
 ```
 
 ## Library

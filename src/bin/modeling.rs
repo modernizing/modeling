@@ -41,7 +41,7 @@ struct Opts {
     without_parent: bool,
     /// if class's prop start with `IRepository` will become `Repository`
     #[structopt(long)]
-    remove_impl_suffix: bool,
+    without_impl_suffix: bool,
     /// if class's prop end with Id and class in list, will replace `int` type to `xxClass`
     #[structopt(long)]
     inline_id_suffix: bool,
@@ -53,7 +53,7 @@ impl Opts {
             merge: self.merge,
             field_only: self.field_only,
             without_parent: self.without_parent,
-            remove_impl_suffix: self.remove_impl_suffix,
+            without_impl_suffix: self.without_impl_suffix,
             inline_id_suffix: self.inline_id_suffix,
         }
     }
