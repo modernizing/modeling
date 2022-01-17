@@ -68,6 +68,7 @@ lazy_static! {
     static ref PURE_RUST_TYPE: Regex = Regex::new(
         r"((Vec|Option|<)*)(?P<datatype>[A-Za-z0-9_]+)>*"
     ).unwrap();
+
     static ref GO_TYPE: Regex =
         Regex::new(r"(?x)/\^([\s]*)
 ([A-Za-z0-9_.]+)

@@ -308,4 +308,28 @@ mod tests {
         let code_dir = root_dir.join("_fixtures").join("ctags");
         code_dir
     }
+
+    #[test]
+    fn should_parse_rust_language() {
+        let args = vec![
+            "ptags",
+            "-t",
+            "1",
+            "--verbose=true",
+            "--fields=+latinK",
+            "--languages=Rust",
+        ];
+        let opt = Opt::from_iter(args.iter());
+        let mut files = vec![];
+        let code_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src").join("ctags")
+            .join("ctags_opt.rs");
+
+        files.push(format!("{}", code_dir.display()));
+        let outputs = CmdCtags::call(&opt, &files).unwrap();
+        let out_str = str::from_utf8(&outputs[0].stdout).unwrap();
+
+        println!("{:}", out_str);
+        // assert!(lines.next().is_none())
+    }
+
 }

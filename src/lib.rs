@@ -184,6 +184,19 @@ mod tests {
     }
 
     #[test]
+    fn should_support_for_rust_property() {
+        let root_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        let ctags_dir = root_dir.join("src").join("ctags");
+
+        let path = format!("{}", ctags_dir.display());
+
+        let option = ParseOption::default();
+        let vec = by_dir(path, FileFilter::new(vec![], vec![], "".to_string()), &option);
+
+        assert_eq!(3, vec.len());
+    }
+
+    #[test]
     fn should_filter_by_grep() {
         let root_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
         let ctags_dir = root_dir.join("_fixtures")
