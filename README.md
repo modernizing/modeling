@@ -48,20 +48,22 @@ OPTIONS:
     -s, --suffixes <suffixes>...       filter by suffixes, like: `java` for .java file
 ```
 
-### sample: Visualization
+### sample: puml to Image
 
 convert to image: `plantuml modeling.puml modeling.svg -tsvg`
-
-or set output type to `graphviz`
-
-```
-modeling --input=/youpath  --field-only -o graphviz --remove-impl-suffix
-```
 
 ### sample: Grep with MVC
 
 ```
 modeling --input=/youpath/ --field-only --without-parent --grep ".*Service|.*Controller|.*Repository"
+```
+
+### sample: with Graphviz and Visualization
+
+with `--output-type=graphviz`
+
+```bash
+modeling --input=/youpath  --field-only -o graphviz --remove-impl-suffix
 ```
 
 ## Library
