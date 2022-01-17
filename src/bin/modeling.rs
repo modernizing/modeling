@@ -10,7 +10,7 @@ use std::ffi::OsStr;
 use modeling::render::graphviz_render::GraphvizRender;
 
 #[derive(StructOpt, Debug, PartialEq, Clone)]
-#[structopt(name = "basic")]
+#[structopt(name = "Modeling")]
 struct Opts {
     /// merge for same method name
     #[structopt(short, long)]

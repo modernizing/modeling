@@ -11,27 +11,67 @@ process:
 1. generate to opt
 2. call `ctags` with opt
 3. analysis ctags logs
-4. output resulse
+4. output result
 
 language support:
 
  - [x] Java
- - [x] C# (basic, not testing namespace)
+ - [x] C#
  - [x] Cpp
  - [x] TypeScript
  - [x] Golang
  - [x] Rust (basic)
+ - ... others by ctags
 
 ## Usage
 
-### use binary
+```bash
+Modeling 0.5.0
+
+USAGE:
+    modeling [FLAGS] [OPTIONS]
+
+FLAGS:
+    -b, --by-modules            multiple modules
+    -f, --field-only            only load field in methods
+    -h, --help                  Prints help information
+    -m, --merge                 merge for same method name
+    -r, --remove-impl-suffix    if class's field start with `IRepository` will become `Repository`
+    -V, --version               Prints version information
+    -w, --without-parent        without class inheritance
+
+OPTIONS:
+    -g, --grep <grep>                  by grep regex rules: for example: [default: ]
+    -i, --input <input>                input dir [default: .]
+    -o, --output-type <output-type>    support: puml, mermaid, graphviz with json [default: puml]
+    -p, --packages <packages>...       filter by packages, like: `com.phodal.modeling`
+    -s, --suffixes <suffixes>...       filter by suffixes, like: `java` for .java file
+```
+
+### sample: Visualization
+
+convert to image: `plantuml modeling.puml modeling.svg -tsvg`
+
+or set output type to `graphviz`
+
+```
+modeling --input=/youpath  --field-only -o graphviz --remove-impl-suffix
+```
+
+### sample: Grep with MVC
+
+```
+modeling --input=/youpath/ --field-only --without-parent --grep ".*Service|.*Controller|.*Repository"
+```
+
+## Library
 
 ```
 cargo install modeling
 modeling .
 ```
 
-### Library
+#### Library
 
 ```rust
 use modeling::{by_dir};
@@ -62,25 +102,6 @@ class Snake extends Animal {
 
 @enduml
 ```
-
-## Usage
-
-- Modeling, create `model from source code by `ctags`.
-- Concepting, generate concepts from method name & class name.
-- Diffing, diff two different file.
-
-## Samples
-
-to image: `plantuml modeling.puml modeling.svg -tsvg`
-
-### MVC only
-
-```
-modeling --input=/youpath/ --field-only --without-parent --grep ".*Service|.*Controller|.*Repository"
-```
-
-## with Graphviz
-
 
 
 License
