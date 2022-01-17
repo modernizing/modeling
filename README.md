@@ -63,6 +63,13 @@ class Snake extends Animal {
 @enduml
 ```
 
+## Usage
+
+- Modeling, create `model from source code by `ctags`.
+- Concepting, generate concepts from method name & class name.
+- Diffing, diff two different file.
+- Graphing, generate `graphviz` and visual data.
+
 ## Samples
 
 to image: `plantuml modeling.puml modeling.svg -tsvg`
@@ -72,6 +79,10 @@ to image: `plantuml modeling.puml modeling.svg -tsvg`
 ```
 modeling --input=/youpath/ --field-only --without-parent --grep ".*Service|.*Controller|.*Repository"
 ```
+
+## with Graphviz
+
+
 
 License
 ---
