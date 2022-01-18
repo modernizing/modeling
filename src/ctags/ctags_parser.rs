@@ -80,6 +80,7 @@ lazy_static! {
     ).unwrap();
 
     static ref PARAMETER: Regex = Regex::new(r"/.*\((?P<parameters>(.*?))\).*/").unwrap();
+    static ref RUST_RETURN_TYPE: Regex = Regex::new(r"\s->\s(?P<datatype>[A-Za-z0-9_.]+)\s").unwrap();
 
     static ref TYPE_KEYWORDS: [&'static str; 18] = [
         "private",
@@ -227,6 +228,11 @@ impl CtagsParser {
 
                     if let Some(ty) = PURE_RUST_TYPE.captures(data_type.as_str()) {
                         pure_data_type = (&ty["datatype"]).to_string();
+                    }
+                } else if let Some(capts) = RUST_RETURN_TYPE.captures(line) {
+                    data_type =  (&capts["datatype"]).to_string();
+                    if data_type == "Self" {
+                        data_type = clazz.name.to_string()
                     }
                 }
             }
