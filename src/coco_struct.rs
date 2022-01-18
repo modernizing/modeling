@@ -6,6 +6,7 @@ pub struct MemberInfo {
     pub access: String,
     pub data_type: String,
     pub pure_data_type: String,
+    pub line_no: i32
 }
 
 impl MemberInfo {
@@ -15,6 +16,7 @@ impl MemberInfo {
             access: access.to_string(),
             data_type,
             pure_data_type: "".to_string(),
+            line_no: 0
         }
     }
 }
@@ -26,6 +28,7 @@ pub struct MethodInfo {
     pub parameters: Vec<String>,
     pub return_type: String,
     pub pure_return_type: String,
+    pub line_no: i32,
 }
 
 impl MethodInfo {
@@ -36,6 +39,7 @@ impl MethodInfo {
             parameters,
             return_type,
             pure_return_type: "".to_string(),
+            line_no: 0
         }
     }
 

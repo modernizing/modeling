@@ -49,7 +49,8 @@ lazy_static! {
 ^(?P<name>[A-Za-z0-9_]+)
 \t(?P<data_type>[^\t]+)
 \t([^\t]+.*?")
-\t(?P<tag_type>[A-Za-z]+)"#
+\t(?P<tag_type>[A-Za-z]+)
+\tline:(?P<line_no>[0-9]+)"#
     )
     .unwrap();
     static ref RE_CLASS: Regex = Regex::new(
@@ -178,6 +179,7 @@ impl CtagsParser {
 
         let name = &captures["name"];
         let tag_type = &captures["tag_type"];
+        let line_no: i32 = (&captures["line_no"]).parse().unwrap_or(0);
 
         let mut access = "";
         if let Some(capts) = RE_ACCESS.captures(line) {
@@ -208,7 +210,6 @@ impl CtagsParser {
                     data_type = (&capts["datatype"]).to_string();
 
                     let field_with_access = (&capts["field"]).to_string();
-
                     let split = field_with_access.split(" ")
                         .map(|s| s.to_string())
                         .collect::<Vec<String>>();
@@ -244,6 +245,7 @@ impl CtagsParser {
 
         if tag_type.eq("member") || tag_type.eq("field") || tag_type.eq("property") {
             let mut member = MemberInfo::new(name, access, data_type);
+            member.line_no = line_no;
             if !pure_data_type.is_empty() {
                 member.pure_data_type = pure_data_type;
             }
@@ -251,6 +253,7 @@ impl CtagsParser {
         } else if tag_type.eq("method") || tag_type.eq("function") {
             let parameters = Self::pick_parameter_list(&captures[3]);
             let mut method = MethodInfo::new(name, access, parameters, data_type);
+            method.line_no = line_no;
             if !pure_data_type.is_empty() {
                 method.pure_return_type = pure_data_type;
             }
@@ -398,6 +401,22 @@ name	src/coco_struct.rs	/^    pub name: String,$/;\"	field	line:22	language:Rust
     }
 
     #[test]
+    pub fn should_build_rust_method_datatype() {
+        let str =
+            r#"GraphvizRender	graphviz_render.rs	/^pub struct GraphvizRender;$/;"	struct	line:11	language:Rust
+render	graphviz_render.rs	/^    pub fn render(classes: &Vec<ClassInfo>, parse_option: &ParseOption) -> String {$/;"	method	line:35	language:Rust	implementation:GraphvizRender"#;
+
+        let mut lines = vec![];
+        lines.push(str.lines());
+        let parser = CtagsParser::parse_str(lines);
+        let classes = parser.classes();
+
+        assert_eq!(1, classes.len());
+        assert_eq!("render", classes[0].methods[0].name);
+        // assert_eq!("+", classes[0].methods[0].access);
+    }
+
+    #[test]
     pub fn should_parse_java_file() {
         let dir = tags_dir().join("java_tags");
         let parser = CtagsParser::parse(dir);
@@ -438,8 +457,11 @@ name	src/coco_struct.rs	/^    pub name: String,$/;\"	field	line:22	language:Rust
         assert_eq!("ClassInfo", classes[0].name);
         assert_eq!(7, classes[0].members.len());
         assert_eq!("file", classes[0].members[0].name);
-        assert_eq!("parents", classes[0].members[6].name);
-        assert_eq!("String", classes[0].members[6].pure_data_type);
+
+        let six_member = &classes[0].members[6];
+        assert_eq!("parents", six_member.name);
+        assert_eq!("String", six_member.pure_data_type);
+        assert_eq!(43, six_member.line_no)
     }
 
     #[test]
