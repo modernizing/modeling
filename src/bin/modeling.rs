@@ -12,6 +12,9 @@ use modeling::render::graphviz_render::GraphvizRender;
 #[derive(StructOpt, Debug, PartialEq, Clone)]
 #[structopt(name = "Modeling")]
 struct Opts {
+    /// output debug information
+    #[structopt(short, long)]
+    debug: bool,
     /// merge for same method name
     #[structopt(short, long)]
     merge: bool,
@@ -92,6 +95,11 @@ fn output_by_dir(opts: &Opts, parse_option: &ParseOption, filter: &FileFilter, d
 
 fn output_all_in_one(opts: Opts, parse_option: &ParseOption, filter: FileFilter) {
     let classes = by_dir(&opts.input, filter, parse_option);
+
+    if opts.debug {
+        let _ = fs::write("debug.json", serde_json::to_string(&classes).unwrap());
+    }
+
     output_file(&opts, &classes, "modeling");
 }
 
