@@ -1,0 +1,17 @@
+DData	graphviz_render.rs	/^pub struct DData {$/;"	struct	line:14	language:Rust
+DLink	graphviz_render.rs	/^pub struct DLink {$/;"	struct	line:27	language:Rust
+DNode	graphviz_render.rs	/^pub struct DNode {$/;"	struct	line:20	language:Rust
+GraphvizRender	graphviz_render.rs	/^impl GraphvizRender {$/;"	implementation	line:34	language:Rust
+GraphvizRender	graphviz_render.rs	/^pub struct GraphvizRender;$/;"	struct	line:11	language:Rust
+group	graphviz_render.rs	/^    group: usize$/;"	field	line:23	language:Rust	struct:DNode
+id	graphviz_render.rs	/^    id: String,$/;"	field	line:21	language:Rust	struct:DNode
+links	graphviz_render.rs	/^    links: Vec<DLink>$/;"	field	line:16	language:Rust	struct:DData
+nodes	graphviz_render.rs	/^    nodes: Vec<DNode>,$/;"	field	line:15	language:Rust	struct:DData
+package	graphviz_render.rs	/^    package: String,$/;"	field	line:22	language:Rust	struct:DNode
+package	graphviz_render.rs	/^    pub package: String,$/;"	field	line:31	language:Rust	struct:DLink
+render	graphviz_render.rs	/^    pub fn render(classes: &Vec<ClassInfo>, parse_option: &ParseOption) -> String {$/;"	method	line:35	language:Rust	implementation:GraphvizRender
+should_render_graphviz	graphviz_render.rs	/^    fn should_render_graphviz() {$/;"	function	line:136	language:Rust	module:tests
+source	graphviz_render.rs	/^    source: String,$/;"	field	line:28	language:Rust	struct:DLink
+target	graphviz_render.rs	/^    target: String,$/;"	field	line:29	language:Rust	struct:DLink
+tests	graphviz_render.rs	/^mod tests {$/;"	module	line:131	language:Rust
+value	graphviz_render.rs	/^    value: usize,$/;"	field	line:30	language:Rust	struct:DLink

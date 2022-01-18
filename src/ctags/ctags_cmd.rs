@@ -321,8 +321,8 @@ mod tests {
         ];
         let opt = Opt::from_iter(args.iter());
         let mut files = vec![];
-        let code_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src").join("ctags")
-            .join("ctags_opt.rs");
+        let code_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src").join("render")
+            .join("graphviz_render.rs");
 
         files.push(format!("{}", code_dir.display()));
         let outputs = CmdCtags::call(&opt, &files).unwrap();

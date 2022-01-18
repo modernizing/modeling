@@ -63,7 +63,7 @@ lazy_static! {
     static ref RE_TYPE: Regex =
         Regex::new(r"/\^([ ]*)(?P<datatype>[A-Za-z0-9_.]+)([^A-Za-z0-9_]+)(.*)\$/").unwrap();
     static ref RUST_TYPE: Regex = Regex::new(
-        r"/\^([ ]*)(?P<access>[A-Za-z0-9_.]+)(\t|\s)([A-Za-z0-9_.]+)\s*:(\t|\s)*(?P<datatype>[A-Za-z0-9_.<>]+)"
+        r"/\^([ ]*)(?P<field>[A-Za-z0-9_.\s]+)\s*:(\t|\s)*(?P<datatype>[A-Za-z0-9_.<>]+)"
     ).unwrap();
     static ref PURE_RUST_TYPE: Regex = Regex::new(
         r"((Vec|Option|<)*)(?P<datatype>[A-Za-z0-9_]+)>*"
@@ -207,11 +207,22 @@ impl CtagsParser {
                 if let Some(capts) = RUST_TYPE.captures(line) {
                     data_type = (&capts["datatype"]).to_string();
 
-                    if &capts["access"] == "pub" {
-                        access = "+"
+                    let field_with_access = (&capts["field"]).to_string();
+
+                    let split = field_with_access.split(" ")
+                        .map(|s| s.to_string())
+                        .collect::<Vec<String>>();
+
+                    if split.len() > 1 {
+                        if split[0] == "pub" {
+                            access = "+"
+                        } else {
+                            access = "#"
+                        }
                     } else {
                         access = "-"
                     }
+
 
                     if let Some(ty) = PURE_RUST_TYPE.captures(data_type.as_str()) {
                         pure_data_type = (&ty["datatype"]).to_string();
