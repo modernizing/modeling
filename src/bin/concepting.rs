@@ -20,15 +20,13 @@ struct ConceptOpts {
     /// input dir
     #[structopt(short, long, default_value = ".")]
     input: String,
-
-    // filter dir
+    /// filter by packages, like: `com.phodal.modeling`
     #[structopt(long, short, use_delimiter = true)]
     packages: Vec<String>,
-
-    // filter suffixes
+    /// filter by suffixes, like: `java` for .java file
     #[structopt(long, short, use_delimiter = true)]
     suffixes: Vec<String>,
-
+    /// by grep regex rules: for example: `.*Service`
     #[structopt(short, long, default_value = "")]
     grep: String,
 }
