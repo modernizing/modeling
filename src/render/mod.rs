@@ -101,10 +101,10 @@ mod tests {
         let mut classes = vec![];
         let mut demo = ClassInfo::new("Demo");
 
-        let member = MemberInfo::new("demo", "-", "String".to_string());
+        let member = MemberInfo::new("demo", "-".to_string(), "String".to_string());
         demo.members.push(member);
 
-        let method = MethodInfo::new("method", "-", vec![], "Demo".to_string());
+        let method = MethodInfo::new("method", "-".to_string(), vec![], "Demo".to_string());
         demo.methods.push(method);
 
         classes.push(demo);
@@ -122,10 +122,10 @@ mod tests {
         let mut demo = ClassInfo::new("Demo");
         let demo2 = ClassInfo::new("Demo2");
 
-        let member = MemberInfo::new("demo", "-", "String".to_string());
+        let member = MemberInfo::new("demo", "-".to_string(), "String".to_string());
         demo.members.push(member);
 
-        let method = MethodInfo::new("method", "-", vec![], "Demo2".to_string());
+        let method = MethodInfo::new("method", "-".to_string(), vec![], "Demo2".to_string());
         demo.methods.push(method);
 
         classes.push(demo);
@@ -158,7 +158,7 @@ mod tests {
         let mut demo = ClassInfo::new("Demo");
         let demo2 = ClassInfo::new("Demo2");
 
-        let mut method = MethodInfo::new("method", "-", vec![], "[]Demo2".to_string());
+        let mut method = MethodInfo::new("method", "-".to_string(), vec![], "[]Demo2".to_string());
         method.pure_return_type = "Demo2".to_string();
         demo.methods.push(method);
 

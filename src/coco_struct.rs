@@ -10,10 +10,10 @@ pub struct MemberInfo {
 }
 
 impl MemberInfo {
-    pub fn new(name: &str, access: &str, data_type: String) -> Self {
+    pub fn new(name: &str, access: String, data_type: String) -> Self {
         MemberInfo {
             name: name.to_string(),
-            access: access.to_string(),
+            access,
             data_type,
             pure_data_type: "".to_string(),
             line_no: 0
@@ -32,10 +32,10 @@ pub struct MethodInfo {
 }
 
 impl MethodInfo {
-    pub fn new(name: &str, access: &str, parameters: Vec<String>, return_type: String) -> Self {
+    pub fn new(name: &str, access: String, parameters: Vec<String>, return_type: String) -> Self {
         MethodInfo {
             name: name.to_string(),
-            access: access.to_string(),
+            access,
             parameters,
             return_type,
             pure_return_type: "".to_string(),

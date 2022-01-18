@@ -182,13 +182,13 @@ impl CtagsParser {
         let tag_type = &captures["tag_type"];
         let line_no: i32 = (&captures["line_no"]).parse().unwrap_or(0);
 
-        let mut access = "";
+        let mut access = "".to_string();
         if let Some(capts) = RE_ACCESS.captures(line) {
             let match_access = &capts["access"];
             match match_access {
-                "public" => access = "+",
-                "private" => access = "-",
-                "protected" => access = "#",
+                "public" => access = "+".to_string(),
+                "private" => access = "-".to_string(),
+                "protected" => access = "#".to_string(),
                 &_ => {}
             }
         }
@@ -211,26 +211,13 @@ impl CtagsParser {
                     data_type = (&capts["datatype"]).to_string();
 
                     let field_with_access = (&capts["field"]).to_string();
-                    let split = field_with_access.split(" ")
-                        .map(|s| s.to_string())
-                        .collect::<Vec<String>>();
-
-                    if split.len() > 1 {
-                        if split[0] == "pub" {
-                            access = "+"
-                        } else {
-                            access = "#"
-                        }
-                    } else {
-                        access = "-"
-                    }
-
+                    access = Self::parse_rust_access(field_with_access);
 
                     if let Some(ty) = PURE_RUST_TYPE.captures(data_type.as_str()) {
                         pure_data_type = (&ty["datatype"]).to_string();
                     }
                 } else if let Some(capts) = RUST_RETURN_TYPE.captures(line) {
-                    data_type =  (&capts["datatype"]).to_string();
+                    data_type = (&capts["datatype"]).to_string();
                     if data_type == "Self" {
                         data_type = clazz.name.to_string()
                     }
@@ -267,6 +254,22 @@ impl CtagsParser {
         }
     }
 
+    fn parse_rust_access(field_with_access: String) -> String {
+        let split = field_with_access.split(" ")
+            .map(|s| s.to_string())
+            .collect::<Vec<String>>();
+
+        if split.len() > 1 {
+            return if split[0] == "pub" {
+                "+".to_string()
+            } else {
+                "#".to_string()
+            }
+        }
+
+        "-".to_string()
+    }
+
     pub fn remove_keywords(mut line: String) -> String {
         for keyword in TYPE_KEYWORDS.iter() {
             line = line.replacen(keyword, "", 1)
@@ -278,13 +281,11 @@ impl CtagsParser {
     fn lookup_class_from_map(&mut self, line: &str) -> Option<&mut ClassInfo> {
         let mut class_name = "".to_string();
 
-        #[allow(unused_assignments)]
-        let mut package = "".to_string();
         if let Some(captures) = RE_CLASS.captures(line) {
             class_name = captures["class_name"].to_string();
         }
 
-        package = class_name.clone();
+        let package = class_name.clone();
         let split = class_name.split(".");
         if let Some(last) = split.last() {
             class_name = last.to_string();
@@ -345,7 +346,6 @@ impl CtagsParser {
                     }
                 })
         ).unwrap_or(vec![])
-
     }
 }
 

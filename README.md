@@ -20,7 +20,7 @@ language support:
  - [x] Cpp
  - [x] TypeScript
  - [x] Golang
- - [x] Rust (basic)
+ - [x] Rust (only for struct)
  - ... others by ctags
 
 ## Usage
