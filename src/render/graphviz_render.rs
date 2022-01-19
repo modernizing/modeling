@@ -42,39 +42,38 @@ impl GraphvizRender {
             class_map.insert(clazz.name.clone(), true);
         }
 
+        let mut class_catalog: HashMap<&str, usize> = HashMap::new();
+        class_catalog.insert("Repository", 1);
+        class_catalog.insert("Controller", 2);
+        class_catalog.insert("Ctrl", 2);
+        class_catalog.insert("Service", 3);
+        class_catalog.insert("ServiceImpl", 3);
+
+        let mut map_names: HashMap<usize, &str> = HashMap::new();
+        map_names.insert(1, "Repository");
+        map_names.insert(2, "Controller");
+        map_names.insert(3, "Service");
+
         for clazz in classes {
             let mut dep_map: HashMap<String, String> = HashMap::default();
 
-            // todo: add parameter for mvc
+            let mut has_catalog = false;
             let class_name = &clazz.name;
-            if class_name.ends_with("Repository") {
-                let graph = sub_graphs_map.entry("Repository".to_string()).or_insert(vec![]);
-                graph.push(class_name.to_string());
+            for (key, value) in &class_catalog {
+                if class_name.ends_with(key) {
+                    has_catalog = true;
+                    let graph = sub_graphs_map.entry(map_names.get(value).unwrap().to_string()).or_insert(vec![]);
+                    graph.push(class_name.to_string());
 
-                data.nodes.push(DNode {
-                    id: class_name.to_string(),
-                    package: clazz.package.to_string(),
-                    group: 1
-                })
-            } else if class_name.ends_with("Controller") || class_name.ends_with("Ctrl") {
-                let graph = sub_graphs_map.entry("Controller".to_string()).or_insert(vec![]);
-                graph.push(class_name.to_string());
+                    data.nodes.push(DNode {
+                        id: class_name.to_string(),
+                        package: clazz.package.to_string(),
+                        group: *value
+                    })
+                }
+            }
 
-                data.nodes.push(DNode {
-                    id: class_name.to_string(),
-                    package: clazz.package.to_string(),
-                    group: 2
-                })
-            } else if class_name.ends_with("Service") || class_name.ends_with("Services") || class_name.ends_with("ServiceImpl") {
-                let graph = sub_graphs_map.entry("Service".to_string()).or_insert(vec![]);
-                graph.push(class_name.to_string());
-
-                data.nodes.push(DNode {
-                    id: class_name.to_string(),
-                    package: clazz.package.to_string(),
-                    group: 3
-                })
-            } else {
+            if !has_catalog {
                 data.nodes.push(DNode {
                     id: class_name.to_string(),
                     package: clazz.package.to_string(),
