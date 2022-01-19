@@ -56,7 +56,7 @@ impl GraphvizRender {
                     package: clazz.package.to_string(),
                     group: 1
                 })
-            } else if class_name.ends_with("Controller") {
+            } else if class_name.ends_with("Controller") || class_name.ends_with("Ctrl") {
                 let graph = sub_graphs_map.entry("Controller".to_string()).or_insert(vec![]);
                 graph.push(class_name.to_string());
 
@@ -65,7 +65,7 @@ impl GraphvizRender {
                     package: clazz.package.to_string(),
                     group: 2
                 })
-            } else if class_name.ends_with("Service") || class_name.ends_with("ServiceImpl") {
+            } else if class_name.ends_with("Service") || class_name.ends_with("Services") || class_name.ends_with("ServiceImpl") {
                 let graph = sub_graphs_map.entry("Service".to_string()).or_insert(vec![]);
                 graph.push(class_name.to_string());
 
