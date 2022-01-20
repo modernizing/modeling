@@ -42,10 +42,6 @@ impl MethodInfo {
             line_no: 0
         }
     }
-
-    pub fn parameter_too_long(&self) -> bool {
-        self.parameters.len() > 5
-    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

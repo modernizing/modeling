@@ -10,8 +10,8 @@ impl Default for CamelCaseTok {
 }
 
 impl PreTokenizer for CamelCaseTok {
-    fn pre_tokenize(&self, pretokenized: &mut PreTokenizedString) -> tokenizers::Result<()> {
-        pretokenized.split(|_, normalized| {
+    fn pre_tokenize(&self, pre_tokenized: &mut PreTokenizedString) -> tokenizers::Result<()> {
+        pre_tokenized.split(|_, normalized| {
             normalized.split(char::is_uppercase, SplitDelimiterBehavior::MergedWithNext)
         })
     }

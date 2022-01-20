@@ -48,30 +48,7 @@ impl GraphvizRender {
         for clazz in classes {
             let mut dep_map: HashMap<String, String> = HashMap::default();
 
-            let mut has_catalog = false;
-            let class_name = &clazz.name;
-            for (key, value) in &class_catalog {
-                if class_name.ends_with(key) {
-                    has_catalog = true;
-                    let layer_name = layer_cluster.get(value).unwrap().to_string();
-                    let graph = sub_graphs_map.entry(layer_name).or_insert(vec![]);
-                    graph.push(class_name.to_string());
-
-                    data.nodes.push(DNode {
-                        id: class_name.to_string(),
-                        package: clazz.package.to_string(),
-                        group: *value,
-                    })
-                }
-            }
-
-            if !has_catalog {
-                data.nodes.push(DNode {
-                    id: class_name.to_string(),
-                    package: clazz.package.to_string(),
-                    group: 4,
-                })
-            }
+            Self::create_data_nodes(&mut sub_graphs_map, &mut data, &class_catalog, &layer_cluster, &clazz);
 
             let _ = render_member(&clazz, &mut dep_map, "", parse_option, &mut class_map);
             if !parse_option.field_only {
@@ -114,6 +91,33 @@ impl GraphvizRender {
             sub_graphs.join("\n"),
             deps.join("")
         )
+    }
+
+    fn create_data_nodes(sub_graphs_map: &mut HashMap<String, Vec<String>>, data: &mut DData, class_catalog: &HashMap<&str, usize>, layer_cluster: &HashMap<usize, &str>, clazz: &&ClassInfo) {
+        let mut has_catalog = false;
+        let class_name = &clazz.name;
+        for (key, value) in class_catalog {
+            if class_name.ends_with(key) {
+                has_catalog = true;
+                let layer_name = layer_cluster.get(value).unwrap().to_string();
+                let graph = sub_graphs_map.entry(layer_name).or_insert(vec![]);
+                graph.push(class_name.to_string());
+
+                data.nodes.push(DNode {
+                    id: class_name.to_string(),
+                    package: clazz.package.to_string(),
+                    group: *value,
+                })
+            }
+        }
+
+        if !has_catalog {
+            data.nodes.push(DNode {
+                id: class_name.to_string(),
+                package: clazz.package.to_string(),
+                group: 4,
+            })
+        }
     }
 
     fn catalog_mvc_to_index() -> HashMap<&'static str, usize> {
