@@ -19,14 +19,14 @@ exclude = [
 ]
 
 [dependencies]
-nix            = "0.19"
-tempfile       = "3"
-failure        = "0.1"
+nix = "0.19"
+tempfile = "3"
+failure = "0.1"
 
 # serialize
-serde          = "1"
-serde_derive   = "1"
-serde_json     = "1"
+serde = "1"
+serde_derive = "1"
+serde_json = "1"
 
 lazy_static = "1.4.0"
 
@@ -39,14 +39,14 @@ ignore = "0.4"
 clap = "3.0.0-beta.2"
 
 # command args to struct
-structopt      = "0.3"
+structopt = "0.3"
 structopt-toml = "0.4"
 
 # https://crates.io/crates/grep-regex
 grep-regex = "0.1.9"
 grep-searcher = "0.1.8"
 
-similar =  { version = "2.1.0", features = ["text", "inline", "bytes"] }
+similar = { version = "2.1.0", features = ["text", "inline", "bytes"] }
 console = "0.15.0"
 
 prettytable-rs = "^0.8"
@@ -55,3 +55,15 @@ env_logger = "0.8.4"
 log = "0.4"
 
 tokenizers = "0.11.0"
+
+# visual for embed files
+rust-embed = "6.3.0"
+
+# visual for web
+actix-web = { version = "3", default-features = false }
+actix-rt = "2.6.0"
+
+mime_guess = "2.0.3"
+
+# open URLs in browsers
+webbrowser = "0.5.5"

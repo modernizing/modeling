@@ -95,7 +95,12 @@ impl GraphvizRender {
                     continue;
                 }
 
-                deps.push(format!("{} -> {}\n", current_clz, callee));
+                // for service -> repository
+                if current_clz.ends_with("Service") && callee.ends_with("Repository") {
+                    deps.push(format!("{} -> {}\n [color=\"red\"]", current_clz, callee));
+                } else {
+                    deps.push(format!("{} -> {}\n", current_clz, callee));
+                }
 
                 data.links.push(DLink {
                     source: current_clz,
