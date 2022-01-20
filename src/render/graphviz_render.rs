@@ -13,14 +13,14 @@ pub struct GraphvizRender;
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct DData {
     nodes: Vec<DNode>,
-    links: Vec<DLink>
+    links: Vec<DLink>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct DNode {
     id: String,
     package: String,
-    group: usize
+    group: usize,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
@@ -42,17 +42,8 @@ impl GraphvizRender {
             class_map.insert(clazz.name.clone(), true);
         }
 
-        let mut class_catalog: HashMap<&str, usize> = HashMap::new();
-        class_catalog.insert("Repository", 1);
-        class_catalog.insert("Controller", 2);
-        class_catalog.insert("Ctrl", 2);
-        class_catalog.insert("Service", 3);
-        class_catalog.insert("ServiceImpl", 3);
-
-        let mut map_names: HashMap<usize, &str> = HashMap::new();
-        map_names.insert(1, "Repository");
-        map_names.insert(2, "Controller");
-        map_names.insert(3, "Service");
+        let class_catalog = Self::catalog_mvc_to_index();
+        let layer_cluster = Self::index_to_mvc_cluster();
 
         for clazz in classes {
             let mut dep_map: HashMap<String, String> = HashMap::default();
@@ -62,13 +53,14 @@ impl GraphvizRender {
             for (key, value) in &class_catalog {
                 if class_name.ends_with(key) {
                     has_catalog = true;
-                    let graph = sub_graphs_map.entry(map_names.get(value).unwrap().to_string()).or_insert(vec![]);
+                    let layer_name = layer_cluster.get(value).unwrap().to_string();
+                    let graph = sub_graphs_map.entry(layer_name).or_insert(vec![]);
                     graph.push(class_name.to_string());
 
                     data.nodes.push(DNode {
                         id: class_name.to_string(),
                         package: clazz.package.to_string(),
-                        group: *value
+                        group: *value,
                     })
                 }
             }
@@ -77,7 +69,7 @@ impl GraphvizRender {
                 data.nodes.push(DNode {
                     id: class_name.to_string(),
                     package: clazz.package.to_string(),
-                    group: 4
+                    group: 4,
                 })
             }
 
@@ -102,18 +94,13 @@ impl GraphvizRender {
                     deps.push(format!("{} -> {}\n", current_clz, callee));
                 }
 
-                data.links.push(DLink {
-                    source: current_clz,
-                    target: callee,
-                    package: clazz.package.clone(),
-                    value: 1
-                })
+                data.links.push(DLink { source: current_clz, target: callee, package: clazz.package.clone(), value: 1, })
             }
         }
 
         let mut sub_graphs = vec![];
         for (key, items) in sub_graphs_map {
-            sub_graphs.push(format!("\n  subgraph cluster_{}{{\n    {}\n    }}", key, items.join("\n    ")));
+            sub_graphs.push(format!("\n  subgraph cluster_{}{{\n    {}\n    }}", key.to_lowercase(), items.join("\n    ")));
         }
 
         let _ = fs::write("output.json", serde_json::to_string(&data).unwrap());
@@ -127,6 +114,24 @@ impl GraphvizRender {
             sub_graphs.join("\n"),
             deps.join("")
         )
+    }
+
+    fn catalog_mvc_to_index() -> HashMap<&'static str, usize> {
+        let mut class_catalog: HashMap<&str, usize> = HashMap::new();
+        class_catalog.insert("Repository", 1);
+        class_catalog.insert("Controller", 2);
+        class_catalog.insert("Ctrl", 2);
+        class_catalog.insert("Service", 3);
+        class_catalog.insert("ServiceImpl", 3);
+        class_catalog
+    }
+
+    fn index_to_mvc_cluster() -> HashMap<usize, &'static str> {
+        let mut map_names: HashMap<usize, &str> = HashMap::new();
+        map_names.insert(1, "Repository");
+        map_names.insert(2, "Controller");
+        map_names.insert(3, "Service");
+        map_names
     }
 }
 
