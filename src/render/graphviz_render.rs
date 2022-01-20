@@ -97,7 +97,7 @@ impl GraphvizRender {
 
                 // for service -> repository
                 if current_clz.ends_with("Service") && callee.ends_with("Repository") {
-                    deps.push(format!("{} -> {}\n [color=\"red\"]", current_clz, callee));
+                    deps.push(format!("{} -> {} [color=\"red\"] \n", current_clz, callee));
                 } else {
                     deps.push(format!("{} -> {}\n", current_clz, callee));
                 }
