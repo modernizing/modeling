@@ -32,11 +32,17 @@ jobs:
 
       - name: Build
         run: cargo build --release
+#
+#      - name: Upload modeling to release
+#        uses: svenstaro/upload-release-action@v1-release
+#        with:
+#          repo_token: ${{ secrets.GITHUB_TOKEN }}
+#          file: target/release/${{ matrix.artifact_name }}
+#          asset_name: ${{ matrix.asset_name }}
+#          tag: ${{ github.ref }}
 
-      - name: Upload modeling to release
-        uses: svenstaro/upload-release-action@v1-release
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: target/release/${{ matrix.artifact_name }}
-          asset_name: ${{ matrix.asset_name }}
-          tag: ${{ github.ref }}
+          name: my-artifact
+          path: target/release/
