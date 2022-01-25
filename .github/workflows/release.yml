@@ -45,4 +45,8 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: my-artifact
-          path: target/release/
+          path: |
+            target/release/diffing*
+            target/release/modeling*
+            target/release/visualing*
+            target/release/concepting*
