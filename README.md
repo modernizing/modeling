@@ -10,8 +10,9 @@ process:
 
 1. generate to opt
 2. call `ctags` with opt
-3. analysis ctags logs
+3. analysis `ctags` logs
 4. output result
+5. visual result with `visualing`
 
 language support:
 
@@ -105,6 +106,11 @@ class Snake extends Animal {
 @enduml
 ```
 
+## Others functions
+
+ - concepting, generate concepts from uml files.
+ - diffing, compare two files and generate diff file.
+ - visualing, visualization the uml
 
 License
 ---

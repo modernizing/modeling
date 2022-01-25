@@ -33,7 +33,7 @@ jobs:
       - name: Build
         run: cargo build --release
 
-      - name: Upload binaries to release
+      - name: Upload modeling to release
         uses: svenstaro/upload-release-action@v1-release
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
