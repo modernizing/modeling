@@ -23,7 +23,7 @@ jobs:
             asset_name: modeling-macos-amd64
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
 
       - uses: actions-rs/toolchain@v1
         with:
@@ -32,21 +32,11 @@ jobs:
 
       - name: Build
         run: cargo build --release
-#
-#      - name: Upload modeling to release
-#        uses: svenstaro/upload-release-action@v1-release
-#        with:
-#          repo_token: ${{ secrets.GITHUB_TOKEN }}
-#          file: target/release/${{ matrix.artifact_name }}
-#          asset_name: ${{ matrix.asset_name }}
-#          tag: ${{ github.ref }}
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+      - name: Upload modeling to release
+        uses: svenstaro/upload-release-action@v1-release
         with:
-          name: my-artifact
-          path: |
-            target/release/diffing*
-            target/release/modeling*
-            target/release/visualing*
-            target/release/concepting*
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: target/release/${{ matrix.artifact_name }}
+          asset_name: ${{ matrix.asset_name }}
+          tag: ${{ github.ref }}
