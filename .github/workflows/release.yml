@@ -6,21 +6,9 @@ on:
       - '*'
 
 jobs:
-  publish:
-    name: Publish for ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            artifact_name: modeling
-            asset_name: modeling-linux-amd64
-          - os: windows-latest
-            artifact_name: modeling.exe
-            asset_name: modeling-windows-amd64
-          - os: macos-latest
-            artifact_name: modeling
-            asset_name: modeling-macos-amd64
+  build_windows:
+    name: Build Windows
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -37,6 +25,76 @@ jobs:
         uses: svenstaro/upload-release-action@v1-release
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: target/release/${{ matrix.artifact_name }}
-          asset_name: ${{ matrix.asset_name }}
+          file: target/release/modeling.exe
+          asset_name: modeling-windows.exe
+          tag: ${{ github.ref }}
+
+      - name: Upload visualing to release
+        uses: svenstaro/upload-release-action@v1-release
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: target/release/visualing.exe
+          asset_name: visualing-windows.exe
+          tag: ${{ github.ref }}
+
+  build_ubuntu:
+    name: Build Ubuntu
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+
+      - name: Build
+        run: cargo build --release
+
+      - name: Upload modeling to release
+        uses: svenstaro/upload-release-action@v1-release
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: target/release/modeling
+          asset_name: modeling_linux
+          tag: ${{ github.ref }}
+
+      - name: Upload visualing to release
+        uses: svenstaro/upload-release-action@v1-release
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: target/release/visualing
+          asset_name: visualing_linux
+          tag: ${{ github.ref }}
+
+  build_macos:
+    name: Build macOS
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+
+      - name: Build
+        run: cargo build --release
+
+      - name: Upload modeling to release
+        uses: svenstaro/upload-release-action@v1-release
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: target/release/modeling
+          asset_name: modeling_macos
+          tag: ${{ github.ref }}
+
+      - name: Upload visualing to release
+        uses: svenstaro/upload-release-action@v1-release
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: target/release/visualing
+          asset_name: visualing_macos
           tag: ${{ github.ref }}
