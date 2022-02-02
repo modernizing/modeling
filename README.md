@@ -26,23 +26,29 @@ language support:
 
 ## Usage
 
+ - modeling, generate model from source code.
+ - concepting, generate concepts from source code.
+ - visualing, visualization the uml.
+
 ```bash
-Modeling 0.5.0
+Modeling 0.6.1
 
 USAGE:
     modeling [FLAGS] [OPTIONS]
 
 FLAGS:
-    -b, --by-modules            multiple modules
-    -f, --field-only            only load field in methods
-    -h, --help                  Prints help information
-    -m, --merge                 merge for same method name
-    -r, --remove-impl-suffix    if class's field start with `IRepository` will become `Repository`
-    -V, --version               Prints version information
-    -w, --without-parent        without class inheritance
+    -b, --by-modules             multiple modules
+    -d, --debug                  output debug information
+    -f, --field-only             only load field in methods
+    -h, --help                   Prints help information
+        --inline-id-suffix       if class's prop end with Id and class in list, will replace `int` type to `xxClass`
+    -m, --merge                  merge for same method name
+    -V, --version                Prints version information
+        --without-impl-suffix    if class's prop start with `IRepository` will become `Repository`
+        --without-parent         without class inheritance
 
 OPTIONS:
-    -g, --grep <grep>                  by grep regex rules: for example: [default: ]
+    -g, --grep <grep>                  by grep regex rules: for example: `.*Service` [default: ]
     -i, --input <input>                input dir [default: .]
     -o, --output-type <output-type>    support: puml, mermaid, graphviz with json [default: puml]
     -p, --packages <packages>...       filter by packages, like: `com.phodal.modeling`
@@ -105,12 +111,6 @@ class Snake extends Animal {
 
 @enduml
 ```
-
-## Others functions
-
- - concepting, generate concepts from uml files.
- - diffing, compare two files and generate diff file.
- - visualing, visualization the uml
 
 License
 ---
