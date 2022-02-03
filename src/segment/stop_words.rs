@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 // from : https://github.com/bbalet/stopwords
 
-pub const TECH_STOP_WORDS: &'static [&'static str] = &[
+pub const TECH_STOP_WORDS: &[&str] = &[
     "get",
     "create",
     "update",
@@ -73,7 +73,7 @@ pub const TECH_STOP_WORDS: &'static [&'static str] = &[
     "return",
 ];
 
-pub const STOP_WORDS: &'static [&'static str] = &[
+pub const STOP_WORDS: &[&str] = &[
     "a",
     "about",
     "above",

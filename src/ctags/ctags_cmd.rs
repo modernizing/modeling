@@ -144,7 +144,7 @@ impl CmdCtags {
 
             if !output.status.success() {
                 bail!(CtagsError::ExecFailed {
-                    cmd: cmd,
+                    cmd,
                     err: String::from(str::from_utf8(&output.stderr).context(
                         CtagsError::ConvFailed {
                             s: output.stderr.to_vec(),

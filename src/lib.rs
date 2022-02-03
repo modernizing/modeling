@@ -67,7 +67,7 @@ pub fn by_files(files: Vec<String>, option: &ParseOption) -> Vec<ClassInfo> {
     run_ctags(&opt, &files_by_thread(files, &opt), &option)
 }
 
-fn count_thread(origin_files: &Vec<String>) -> usize {
+fn count_thread(origin_files: &[String]) -> usize {
     let mut thread = origin_files.len();
     let default_ptags_thread = 8;
     if thread >= default_ptags_thread {
@@ -76,8 +76,8 @@ fn count_thread(origin_files: &Vec<String>) -> usize {
     thread
 }
 
-fn run_ctags(opt: &Opt, files: &Vec<String>, option: &ParseOption) -> Vec<ClassInfo> {
-    let outputs = CmdCtags::call(&opt, &files).unwrap();
+fn run_ctags(opt: &Opt, files: &[String], option: &ParseOption) -> Vec<ClassInfo> {
+    let outputs = CmdCtags::call(opt, files).unwrap();
     let mut iters = Vec::new();
     for o in &outputs {
         let iter = if opt.validate_utf8 {
@@ -115,7 +115,7 @@ fn files_by_thread(origin_files: Vec<String>, opt: &Opt) -> Vec<String> {
     let mut files = vec![String::from(""); opt.thread];
     for (i, f) in origin_files.iter().enumerate() {
         files[i % opt.thread].push_str(f);
-        files[i % opt.thread].push_str("\n");
+        files[i % opt.thread].push('\n');
     }
     files
 }
@@ -144,7 +144,7 @@ mod tests {
             .join("source")
             .join("animal.ts");
 
-        return ctags_dir;
+        ctags_dir
     }
 
     #[test]

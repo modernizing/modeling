@@ -47,8 +47,8 @@ pub fn render_member(
             let id = "Id";
             let mut data_type: &str = &member.data_type;
             if parse_option.without_impl_suffix {
+                // ex. `IRepository` will check is R uppercase
                 if data_type.len() > id.len() && data_type.starts_with("I") {
-                    // ex. `IRepository` will check is R uppercase
                     let char = data_type.chars().nth(1).unwrap();
                     if char.to_uppercase().to_string() == char.to_string() {
                         data_type = &data_type[1..data_type.len()];
