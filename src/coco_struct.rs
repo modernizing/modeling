@@ -6,7 +6,7 @@ pub struct MemberInfo {
     pub access: String,
     pub data_type: String,
     pub pure_data_type: String,
-    pub line_no: i32
+    pub line_no: i32,
 }
 
 impl MemberInfo {
@@ -16,7 +16,7 @@ impl MemberInfo {
             access,
             data_type,
             pure_data_type: "".to_string(),
-            line_no: 0
+            line_no: 0,
         }
     }
 }
@@ -39,7 +39,7 @@ impl MethodInfo {
             parameters,
             return_type,
             pure_return_type: "".to_string(),
-            line_no: 0
+            line_no: 0,
         }
     }
 }

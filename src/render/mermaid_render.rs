@@ -1,7 +1,7 @@
 use crate::coco_struct::ClassInfo;
-use std::collections::HashMap;
-use crate::ParseOption;
 use crate::render::{render_member, render_method};
+use crate::ParseOption;
+use std::collections::HashMap;
 
 /// Render classes info to string
 pub struct MermaidRender;
@@ -29,10 +29,18 @@ impl MermaidRender {
             let content = format!("{}{}", members.join(""), methods.join(""));
             let class_name = &clazz.name;
             if clazz.parents.len() > 0 && !parse_option.without_parent {
-                rendered.push(format!("{}{} <|-- {}", space, clazz.parents.join(","), class_name));
+                rendered.push(format!(
+                    "{}{} <|-- {}",
+                    space,
+                    clazz.parents.join(","),
+                    class_name
+                ));
             }
 
-            rendered.push(format!("{}class {} {{\n{}{}}}", space, class_name, content, space));
+            rendered.push(format!(
+                "{}class {} {{\n{}{}}}",
+                space, class_name, content, space
+            ));
 
             for (callee, current_clz) in dep_map {
                 if callee == current_clz {
@@ -47,10 +55,6 @@ impl MermaidRender {
             }
         }
 
-        format!(
-            "{}\n{}",
-            rendered.join("\n\n"),
-            deps.join("")
-        )
+        format!("{}\n{}", rendered.join("\n\n"), deps.join(""))
     }
 }

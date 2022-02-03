@@ -1,14 +1,17 @@
+use crate::{ClassInfo, ParseOption};
 pub use mermaid_render::MermaidRender;
 pub use plantuml_render::PlantUmlRender;
-use crate::{ClassInfo, ParseOption};
 use std::collections::HashMap;
 
-pub mod plantuml_render;
 pub mod graphviz_render;
 pub mod mermaid_render;
+pub mod plantuml_render;
 
-
-pub fn render_method(clazz: &ClassInfo, dep_map: &mut HashMap<String, String>, space: &str) -> Vec<String> {
+pub fn render_method(
+    clazz: &ClassInfo,
+    dep_map: &mut HashMap<String, String>,
+    space: &str,
+) -> Vec<String> {
     let mut methods = vec![];
     for method in &clazz.methods {
         if method.return_type.is_empty() {
@@ -29,7 +32,13 @@ pub fn render_method(clazz: &ClassInfo, dep_map: &mut HashMap<String, String>, s
     methods
 }
 
-pub fn render_member(clazz: &ClassInfo, dep_map: &mut HashMap<String, String>, space: &str, parse_option: &ParseOption, class_map: &mut HashMap<String, bool>) -> Vec<String> {
+pub fn render_member(
+    clazz: &ClassInfo,
+    dep_map: &mut HashMap<String, String>,
+    space: &str,
+    parse_option: &ParseOption,
+    class_map: &mut HashMap<String, bool>,
+) -> Vec<String> {
     let mut members = vec![];
     for member in &clazz.members {
         if member.data_type.is_empty() {
@@ -72,12 +81,11 @@ pub fn render_member(clazz: &ClassInfo, dep_map: &mut HashMap<String, String>, s
     members
 }
 
-
 #[cfg(test)]
 mod tests {
     use crate::coco_struct::{ClassInfo, MemberInfo, MethodInfo};
-    use crate::ParseOption;
     use crate::render::PlantUmlRender;
+    use crate::ParseOption;
 
     #[test]
     fn should_render_empty() {

@@ -232,13 +232,7 @@ mod tests {
 
     #[test]
     fn test_call() {
-        let args = vec![
-            "ptags",
-            "-t",
-            "1",
-            "--verbose=true",
-            "--fields=+latinK",
-        ];
+        let args = vec!["ptags", "-t", "1", "--verbose=true", "--fields=+latinK"];
         let opt = Opt::from_iter(args.iter());
         let mut files = vec![];
         let code_dir = code_dir().join("main.go");
@@ -321,7 +315,9 @@ mod tests {
         ];
         let opt = Opt::from_iter(args.iter());
         let mut files = vec![];
-        let code_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src").join("render")
+        let code_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("src")
+            .join("render")
             .join("graphviz_render.rs");
 
         files.push(format!("{}", code_dir.display()));
@@ -331,5 +327,4 @@ mod tests {
         println!("{:}", out_str);
         // assert!(lines.next().is_none())
     }
-
 }

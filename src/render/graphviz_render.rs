@@ -4,8 +4,8 @@ use std::fs;
 use serde::{Deserialize, Serialize};
 
 use crate::coco_struct::ClassInfo;
-use crate::ParseOption;
 use crate::render::{render_member, render_method};
+use crate::ParseOption;
 
 /// Render classes info to string
 pub struct GraphvizRender;
@@ -48,7 +48,13 @@ impl GraphvizRender {
         for clazz in classes {
             let mut dep_map: HashMap<String, String> = HashMap::default();
 
-            Self::create_data_nodes(&mut sub_graphs_map, &mut data, &class_catalog, &layer_cluster, &clazz);
+            Self::create_data_nodes(
+                &mut sub_graphs_map,
+                &mut data,
+                &class_catalog,
+                &layer_cluster,
+                &clazz,
+            );
 
             let _ = render_member(&clazz, &mut dep_map, "", parse_option, &mut class_map);
             if !parse_option.field_only {
@@ -71,13 +77,22 @@ impl GraphvizRender {
                     deps.push(format!("{} -> {}\n", current_clz, callee));
                 }
 
-                data.links.push(DLink { source: current_clz, target: callee, package: clazz.package.clone(), value: 1, })
+                data.links.push(DLink {
+                    source: current_clz,
+                    target: callee,
+                    package: clazz.package.clone(),
+                    value: 1,
+                })
             }
         }
 
         let mut sub_graphs = vec![];
         for (key, items) in sub_graphs_map {
-            sub_graphs.push(format!("\n  subgraph cluster_{}{{\n    {}\n    }}", key.to_lowercase(), items.join("\n    ")));
+            sub_graphs.push(format!(
+                "\n  subgraph cluster_{}{{\n    {}\n    }}",
+                key.to_lowercase(),
+                items.join("\n    ")
+            ));
         }
 
         let _ = fs::write("output.json", serde_json::to_string(&data).unwrap());
@@ -93,7 +108,13 @@ impl GraphvizRender {
         )
     }
 
-    fn create_data_nodes(sub_graphs_map: &mut HashMap<String, Vec<String>>, data: &mut DData, class_catalog: &HashMap<&str, usize>, layer_cluster: &HashMap<usize, &str>, clazz: &&ClassInfo) {
+    fn create_data_nodes(
+        sub_graphs_map: &mut HashMap<String, Vec<String>>,
+        data: &mut DData,
+        class_catalog: &HashMap<&str, usize>,
+        layer_cluster: &HashMap<usize, &str>,
+        clazz: &&ClassInfo,
+    ) {
         let mut has_catalog = false;
         let class_name = &clazz.name;
         for (key, value) in class_catalog {
@@ -139,11 +160,10 @@ impl GraphvizRender {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
-    use crate::{ClassInfo, ParseOption};
     use crate::render::graphviz_render::GraphvizRender;
+    use crate::{ClassInfo, ParseOption};
 
     #[test]
     fn should_render_graphviz() {

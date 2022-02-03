@@ -1,18 +1,18 @@
 #[macro_use]
 extern crate prettytable;
 
+use log::info;
 use std::collections::HashMap;
 use std::fs::File;
 use std::path::{Path, PathBuf};
-use log::info;
 
 use prettytable::{format, row, Table};
 use structopt::StructOpt;
 
-use modeling::{by_dir, ClassInfo, ParseOption};
 use modeling::file_filter::FileFilter;
 use modeling::segment::segment;
 use modeling::segment::stop_words::{STOP_WORDS, TECH_STOP_WORDS};
+use modeling::{by_dir, ClassInfo, ParseOption};
 
 #[derive(StructOpt, Debug, PartialEq, Clone)]
 #[structopt(name = "basic")]
@@ -31,7 +31,6 @@ struct ConceptOpts {
     grep: String,
 }
 
-
 impl ConceptOpts {
     pub fn to_parse_option(&self) -> ParseOption {
         ParseOption {
@@ -39,7 +38,7 @@ impl ConceptOpts {
             field_only: false,
             without_parent: false,
             without_impl_suffix: false,
-            inline_id_suffix: false
+            inline_id_suffix: false,
         }
     }
 }
@@ -51,7 +50,11 @@ fn main() {
     info!("parse input {:?} with {:?}", &opts.input, &opts);
 
     let parse_option = opts.to_parse_option();
-    let filter = FileFilter::new(opts.packages.clone(), opts.suffixes.clone(), opts.grep.clone());
+    let filter = FileFilter::new(
+        opts.packages.clone(),
+        opts.suffixes.clone(),
+        opts.grep.clone(),
+    );
 
     output_by_dir(&parse_option, &filter, &PathBuf::from(&opts.input));
 }

@@ -1,8 +1,8 @@
 pub mod camelcase_tok;
 pub mod stop_words;
 
-use tokenizers::{OffsetReferential, OffsetType, PreTokenizedString, PreTokenizer};
 use crate::segment::camelcase_tok::CamelCaseTok;
+use tokenizers::{OffsetReferential, OffsetType, PreTokenizedString, PreTokenizer};
 
 pub fn segment(str: &str) -> Vec<String> {
     segment_camelcase(str)
@@ -23,13 +23,15 @@ pub fn segment_camelcase(str: &str) -> Vec<String> {
     vec
 }
 
-
 #[cfg(test)]
 mod tests {
-    use crate::segment::{segment};
+    use crate::segment::segment;
 
     #[test]
     fn should_segmentation() {
-        assert_eq!(vec!["Hierarchy".to_string(), "Id".to_string()], segment("HierarchyId"));
+        assert_eq!(
+            vec!["Hierarchy".to_string(), "Id".to_string()],
+            segment("HierarchyId")
+        );
     }
 }

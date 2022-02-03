@@ -13,14 +13,14 @@ pub use ctags::ctags_parser::CtagsParser;
 pub use file_filter::*;
 pub use parse_option::ParseOption;
 
-use std::path::Path;
 use crate::file_filter::FileFilter;
+use std::path::Path;
 
-pub mod ctags;
-pub mod render;
 pub mod coco_struct;
+pub mod ctags;
 pub mod file_filter;
 pub mod parse_option;
+pub mod render;
 pub mod segment;
 
 /// Returns Vec<ClassInfo> with the given path.
@@ -130,15 +130,16 @@ fn build_opt(thread: usize) -> Opt {
 
 #[cfg(test)]
 mod tests {
-    use std::path::PathBuf;
-    use std::fs;
+    use crate::file_filter::FileFilter;
     use crate::render::{MermaidRender, PlantUmlRender};
     use crate::{by_dir, ParseOption};
-    use crate::file_filter::FileFilter;
+    use std::fs;
+    use std::path::PathBuf;
 
     pub fn ctags_fixtures_dir() -> PathBuf {
         let root_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        let ctags_dir = root_dir.join("_fixtures")
+        let ctags_dir = root_dir
+            .join("_fixtures")
             .join("ctags")
             .join("source")
             .join("animal.ts");
@@ -164,16 +165,18 @@ mod tests {
     #[test]
     fn should_only_have_one_file() {
         let root_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        let ctags_dir = root_dir.join("_fixtures")
-            .join("ctags")
-            .join("source");
+        let ctags_dir = root_dir.join("_fixtures").join("ctags").join("source");
 
         let path = format!("{}", ctags_dir.display());
 
         let suffixes = vec!["store".to_string()];
 
         let option = ParseOption::default();
-        let vec = by_dir(path, FileFilter::new(vec![], suffixes, "".to_string()), &option);
+        let vec = by_dir(
+            path,
+            FileFilter::new(vec![], suffixes, "".to_string()),
+            &option,
+        );
 
         assert_eq!(3, vec.len());
         let result = PlantUmlRender::render(&vec, &option);
@@ -191,7 +194,11 @@ mod tests {
         let path = format!("{}", ctags_dir.display());
 
         let option = ParseOption::default();
-        let vec = by_dir(path, FileFilter::new(vec![], vec![], "".to_string()), &option);
+        let vec = by_dir(
+            path,
+            FileFilter::new(vec![], vec![], "".to_string()),
+            &option,
+        );
 
         assert_eq!(3, vec.len());
     }
@@ -199,9 +206,7 @@ mod tests {
     #[test]
     fn should_filter_by_grep() {
         let root_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        let ctags_dir = root_dir.join("_fixtures")
-            .join("ctags")
-            .join("source");
+        let ctags_dir = root_dir.join("_fixtures").join("ctags").join("source");
 
         let path = format!("{}", ctags_dir.display());
 

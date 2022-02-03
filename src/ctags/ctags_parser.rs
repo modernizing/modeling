@@ -13,13 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 use crate::coco_struct::{ClassInfo, MemberInfo, MethodInfo};
+use crate::ParseOption;
 use regex::Regex;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::PathBuf;
 use std::str::Lines;
-use crate::ParseOption;
 
 pub struct CtagsParser {
     pub(crate) option: ParseOption,
@@ -60,28 +60,26 @@ lazy_static! {
     .unwrap();
     static ref RE_ACCESS: Regex = Regex::new(r"access:(?P<access>[A-Za-z0-9_]+)").unwrap();
     static ref RE_LANGUAGE: Regex = Regex::new(r"language:(?P<language>[A-Za-z0-9_\#]+)").unwrap();
-
     static ref RE_TYPE: Regex =
         Regex::new(r"/\^([ ]*)(?P<datatype>[A-Za-z0-9_.]+)([^A-Za-z0-9_]+)(.*)\$/").unwrap();
     static ref RUST_TYPE: Regex = Regex::new(
         r"/\^([ ]*)(?P<field>[A-Za-z0-9_.\s]+)\s*:(\t|\s)*(?P<datatype>[A-Za-z0-9_.<>]+)"
-    ).unwrap();
-    static ref PURE_RUST_TYPE: Regex = Regex::new(
-        r"((Vec|Option|<)*)(?P<datatype>[A-Za-z0-9_]+)>*"
-    ).unwrap();
-
-    static ref GO_TYPE: Regex =
-        Regex::new(r"(?x)/\^([\s]*)
+    )
+    .unwrap();
+    static ref PURE_RUST_TYPE: Regex =
+        Regex::new(r"((Vec|Option|<)*)(?P<datatype>[A-Za-z0-9_]+)>*").unwrap();
+    static ref GO_TYPE: Regex = Regex::new(
+        r"(?x)/\^([\s]*)
 ([A-Za-z0-9_.]+)
 (,(\s|\t)*([A-Za-z0-9_.]+))*(\s|\t)* # for `name, access, returntype string`
-(?P<datatype>[A-Za-z0-9_.<>\[\]]+)").unwrap();
-    static ref TYPE_SCRIPT_TYPE: Regex = Regex::new(
-        r"/\^([ |\t]*).*:([ |\t]*)(?P<datatype>[A-Za-z0-9_.<>\[\]]+).*\$/"
-    ).unwrap();
-
+(?P<datatype>[A-Za-z0-9_.<>\[\]]+)"
+    )
+    .unwrap();
+    static ref TYPE_SCRIPT_TYPE: Regex =
+        Regex::new(r"/\^([ |\t]*).*:([ |\t]*)(?P<datatype>[A-Za-z0-9_.<>\[\]]+).*\$/").unwrap();
     static ref PARAMETER: Regex = Regex::new(r"/.*\((?P<parameters>(.*?))\).*/").unwrap();
-    static ref RUST_RETURN_TYPE: Regex = Regex::new(r"\s->\s(?P<datatype>[A-Za-z0-9_.]+)\s").unwrap();
-
+    static ref RUST_RETURN_TYPE: Regex =
+        Regex::new(r"\s->\s(?P<datatype>[A-Za-z0-9_.]+)\s").unwrap();
     static ref TYPE_KEYWORDS: [&'static str; 18] = [
         "private",
         "public",
@@ -255,7 +253,8 @@ impl CtagsParser {
     }
 
     fn parse_rust_access(field_with_access: String) -> String {
-        let split = field_with_access.split(" ")
+        let split = field_with_access
+            .split(" ")
             .map(|s| s.to_string())
             .collect::<Vec<String>>();
 
@@ -264,7 +263,7 @@ impl CtagsParser {
                 "+".to_string()
             } else {
                 "#".to_string()
-            }
+            };
         }
 
         "-".to_string()
@@ -320,10 +319,13 @@ impl CtagsParser {
                 .members
                 .sort_by(|a, b| a.name.to_lowercase().cmp(&b.name.to_lowercase()));
 
-
             if self.option.merge {
-                clazz.methods.dedup_by(|a, b| a.name.eq_ignore_ascii_case(&*b.name));
-                clazz.members.dedup_by(|a, b| a.name.eq_ignore_ascii_case(&*b.name));
+                clazz
+                    .methods
+                    .dedup_by(|a, b| a.name.eq_ignore_ascii_case(&*b.name));
+                clazz
+                    .members
+                    .dedup_by(|a, b| a.name.eq_ignore_ascii_case(&*b.name));
             }
 
             classes.push(clazz);
@@ -335,17 +337,18 @@ impl CtagsParser {
     }
 
     fn pick_parameter_list(signature: &str) -> Vec<String> {
-        PARAMETER.captures(signature).and_then(
-            |cap| cap.name("parameters")
-                .map(|s| s.as_str())
-                .and_then(|s| {
+        PARAMETER
+            .captures(signature)
+            .and_then(|cap| {
+                cap.name("parameters").map(|s| s.as_str()).and_then(|s| {
                     if s.is_empty() {
                         None
                     } else {
                         Some(s.split(',').map(|s| s.to_string()).collect())
                     }
                 })
-        ).unwrap_or(vec![])
+            })
+            .unwrap_or(vec![])
     }
 }
 
@@ -408,8 +411,7 @@ name	src/coco_struct.rs	/^    pub name: String,$/;\"	field	line:22	language:Rust
 
     #[test]
     pub fn should_build_rust_method_datatype() {
-        let str =
-            r#"GraphvizRender	graphviz_render.rs	/^pub struct GraphvizRender;$/;"	struct	line:11	language:Rust
+        let str = r#"GraphvizRender	graphviz_render.rs	/^pub struct GraphvizRender;$/;"	struct	line:11	language:Rust
 render	graphviz_render.rs	/^    pub fn render(classes: &Vec<ClassInfo>, parse_option: &ParseOption) -> String {$/;"	method	line:35	language:Rust	implementation:GraphvizRender"#;
 
         let mut lines = vec![];

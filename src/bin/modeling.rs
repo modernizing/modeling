@@ -1,13 +1,13 @@
 use std::fs;
 
-use ignore::{WalkBuilder, DirEntry};
+use ignore::{DirEntry, WalkBuilder};
 use structopt::StructOpt;
 
-use modeling::{by_dir, ClassInfo, ParseOption};
 use modeling::file_filter::FileFilter;
-use modeling::render::{MermaidRender, PlantUmlRender};
-use std::ffi::OsStr;
 use modeling::render::graphviz_render::GraphvizRender;
+use modeling::render::{MermaidRender, PlantUmlRender};
+use modeling::{by_dir, ClassInfo, ParseOption};
+use std::ffi::OsStr;
 
 #[derive(StructOpt, Debug, PartialEq, Clone)]
 #[structopt(name = "Modeling")]
@@ -66,7 +66,11 @@ fn main() {
     let opts: Opts = Opts::from_args();
 
     let parse_option = opts.to_parse_option();
-    let filter = FileFilter::new(opts.packages.clone(), opts.suffixes.clone(), opts.grep.clone());
+    let filter = FileFilter::new(
+        opts.packages.clone(),
+        opts.suffixes.clone(),
+        opts.grep.clone(),
+    );
 
     if !opts.by_modules {
         output_all_in_one(opts, &parse_option, filter);
@@ -85,7 +89,13 @@ fn main() {
     }
 }
 
-fn output_by_dir(opts: &Opts, parse_option: &ParseOption, filter: &FileFilter, dir: &DirEntry, x: &OsStr) {
+fn output_by_dir(
+    opts: &Opts,
+    parse_option: &ParseOption,
+    filter: &FileFilter,
+    dir: &DirEntry,
+    x: &OsStr,
+) {
     let dir_name = x.to_str().unwrap();
     let classes = by_dir(dir.path(), filter.clone(), parse_option);
     if classes.len() > 0 {

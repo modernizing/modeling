@@ -1,8 +1,8 @@
 use std::borrow::Cow;
 use std::fs;
 
-use actix_web::{App, get, HttpResponse, HttpServer, web};
 use actix_web::body::Body;
+use actix_web::{get, web, App, HttpResponse, HttpServer};
 use mime_guess::from_path;
 use rust_embed::RustEmbed;
 
@@ -33,9 +33,9 @@ pub async fn start(port: &str) -> std::io::Result<()> {
             .service(data)
             .service(web::resource("/{_:.*}").route(web::get().to(dist)))
     })
-        .bind(format!("127.0.0.1:{}", port))?
-        .run()
-        .await;
+    .bind(format!("127.0.0.1:{}", port))?
+    .run()
+    .await;
 }
 
 #[get("/output.json")]
