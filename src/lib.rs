@@ -137,14 +137,11 @@ mod tests {
     use std::path::PathBuf;
 
     pub fn ctags_fixtures_dir() -> PathBuf {
-        let root_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        let ctags_dir = root_dir
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
             .join("_fixtures")
             .join("ctags")
             .join("source")
-            .join("animal.ts");
-
-        ctags_dir
+            .join("animal.ts")
     }
 
     #[test]
