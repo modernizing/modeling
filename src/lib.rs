@@ -2,8 +2,9 @@
 extern crate lazy_static;
 extern crate serde;
 
-use ignore::Walk;
+use std::path::Path;
 
+use ignore::Walk;
 use structopt::StructOpt;
 
 pub use coco_struct::{ClassInfo, MemberInfo, MethodInfo};
@@ -14,7 +15,6 @@ pub use file_filter::*;
 pub use parse_option::ParseOption;
 
 use crate::file_filter::FileFilter;
-use std::path::Path;
 
 pub mod coco_struct;
 pub mod ctags;
@@ -130,11 +130,12 @@ fn build_opt(thread: usize) -> Opt {
 
 #[cfg(test)]
 mod tests {
-    use crate::file_filter::FileFilter;
-    use crate::render::{MermaidRender, PlantUmlRender};
-    use crate::{by_dir, ParseOption};
     use std::fs;
     use std::path::PathBuf;
+
+    use crate::{by_dir, ParseOption};
+    use crate::file_filter::FileFilter;
+    use crate::render::{MermaidRender, PlantUmlRender};
 
     pub fn ctags_fixtures_dir() -> PathBuf {
         PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -222,8 +223,6 @@ mod tests {
 
         assert_eq!(3, vec.len());
         let result = MermaidRender::render(&vec, &option);
-
-        println!("{:?}", result);
 
         let _ = fs::write("demo.puml", result.clone());
         assert!(result.contains("class Animal"));
