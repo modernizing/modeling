@@ -1,6 +1,6 @@
 # Modeling
 
-[![crates.io](https://meritbadge.herokuapp.com/modeling)](https://crates.io/crates/modeling)
+[![crates.io](https://img.shields.io/crates/v/modeling.svg)](https://crates.io/crates/modeling)
 [![docs.rs](https://docs.rs/modeling/badge.svg)](https://docs.rs/modeling/)
 [![license](https://img.shields.io/crates/l/modeling)](https://github.com/inherd/modeling/blob/master/LICENSE)
 
