@@ -8,11 +8,12 @@
 
 process:
 
-1. generate to opt
-2. call `ctags` with opt
-3. analysis `ctags` logs
-4. output result
-5. visual result with `visualing`
+1. analysis `ctags`
+  - generate to opt
+  - call `ctags` with opt
+  - analysis `ctags` logs by regex
+2. generate results
+3. visual result with `visualing` (optional)
 
 language support:
 
@@ -21,7 +22,7 @@ language support:
  - [x] Cpp
  - [x] TypeScript
  - [x] Golang
- - [x] Rust (only for struct)
+ - [x] Rust
  - ... others by ctags
 
 ## Usage
