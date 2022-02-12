@@ -21,18 +21,11 @@ use std::io::{BufRead, BufReader};
 use std::path::PathBuf;
 use std::str::Lines;
 
+
+#[derive(Default)]
 pub struct CtagsParser {
     pub(crate) option: ParseOption,
     class_map: HashMap<String, ClassInfo>,
-}
-
-impl Default for CtagsParser {
-    fn default() -> Self {
-        CtagsParser {
-            option: Default::default(),
-            class_map: Default::default(),
-        }
-    }
 }
 
 lazy_static! {
@@ -285,12 +278,12 @@ impl CtagsParser {
         }
 
         let package = class_name.clone();
-        let split = class_name.split(".");
+        let split = class_name.split('.');
         if let Some(last) = split.last() {
             class_name = last.to_string();
         }
 
-        if class_name.len() <= 0 {
+        if class_name.is_empty() {
             return None;
         }
 
@@ -347,8 +340,7 @@ impl CtagsParser {
                         Some(s.split(',').map(|s| s.to_string()).collect())
                     }
                 })
-            })
-            .unwrap_or(vec![])
+            }).unwrap_or_default()
     }
 }
 
@@ -358,10 +350,7 @@ mod test {
     use std::path::PathBuf;
 
     pub fn tags_dir() -> PathBuf {
-        let root_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        let ctags_dir = root_dir.join("_fixtures").join("ctags");
-
-        return ctags_dir;
+        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("_fixtures").join("ctags")
     }
 
     #[test]
@@ -374,8 +363,7 @@ mod test {
         let str = "MethodIdentifier	SubscriberRegistry.java	/^    MethodIdentifier(Method method) {$/;\"	method	line:239	language:Java	class:SubscriberRegistry.MethodIdentifier	access:default
 MethodIdentifier	SubscriberRegistry.java	/^  private static final class MethodIdentifier {$/;\"	class	line:234	language:Java	class:SubscriberRegistry	access:private";
 
-        let mut lines = vec![];
-        lines.push(str.lines());
+        let lines = vec![str.lines()];
         let parser = CtagsParser::parse_str(lines);
         let classes = parser.classes();
 
@@ -399,8 +387,7 @@ MethodIdentifier	SubscriberRegistry.java	/^  private static final class MethodId
             "MethodInfo	src/coco_struct.rs	/^pub struct MethodInfo {$/;\"	struct	line:21	language:Rust
 name	src/coco_struct.rs	/^    pub name: String,$/;\"	field	line:22	language:Rust	struct:MethodInfo";
 
-        let mut lines = vec![];
-        lines.push(str.lines());
+        let lines = vec![str.lines()];
         let parser = CtagsParser::parse_str(lines);
         let classes = parser.classes();
 
@@ -414,8 +401,7 @@ name	src/coco_struct.rs	/^    pub name: String,$/;\"	field	line:22	language:Rust
         let str = r#"GraphvizRender	graphviz_render.rs	/^pub struct GraphvizRender;$/;"	struct	line:11	language:Rust
 render	graphviz_render.rs	/^    pub fn render(classes: &Vec<ClassInfo>, parse_option: &ParseOption) -> String {$/;"	method	line:35	language:Rust	implementation:GraphvizRender"#;
 
-        let mut lines = vec![];
-        lines.push(str.lines());
+        let lines = vec![str.lines()];
         let parser = CtagsParser::parse_str(lines);
         let classes = parser.classes();
 
@@ -535,8 +521,7 @@ MethodIdentifier	SubscriberRegistry.java	/^    MethodIdentifier(Method method) {
 MethodIdentifier	SubscriberRegistry.java	/^    MethodIdentifier(Method method) {$/;\"	method	line:238	language:Java	class:SubscriberRegistry.MethodIdentifier	access:default
 MethodIdentifier	SubscriberRegistry.java	/^  private static final class MethodIdentifier {$/;\"	class	line:234	language:Java	class:SubscriberRegistry	access:private";
 
-        let mut lines = vec![];
-        lines.push(str.lines());
+        let lines = vec![str.lines()];
         let parser = CtagsParser::parse_str(lines.clone());
         let classes = parser.classes();
 
