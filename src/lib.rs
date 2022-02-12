@@ -40,7 +40,7 @@ pub mod segment;
 /// let puml = PlantUmlRender::render(&classes, &ParseOption::default());
 /// ```
 pub fn by_dir<P: AsRef<Path>>(path: P, filter: FileFilter, option: &ParseOption) -> Vec<ClassInfo> {
-    by_files(files_from_path(path, filter), &option)
+    by_files(files_from_path(path, filter), option)
 }
 
 /// Returns Vec<ClassInfo> with the given files.
@@ -64,7 +64,7 @@ pub fn by_files(files: Vec<String>, option: &ParseOption) -> Vec<ClassInfo> {
     let thread = count_thread(&files);
     let opt = build_opt(thread);
 
-    run_ctags(&opt, &files_by_thread(files, &opt), &option)
+    run_ctags(&opt, &files_by_thread(files, &opt), option)
 }
 
 fn count_thread(origin_files: &[String]) -> usize {
@@ -89,21 +89,18 @@ fn run_ctags(opt: &Opt, files: &[String], option: &ParseOption) -> Vec<ClassInfo
     }
 
     let mut parser = CtagsParser::parse_str(iters);
-    parser.option = option.clone();
-    let classes = parser.classes();
 
-    classes
+    parser.option = option.clone();
+    parser.classes()
 }
 
 fn files_from_path<P: AsRef<Path>>(path: P, filter: FileFilter) -> Vec<String> {
     let mut origin_files = vec![];
-    for result in Walk::new(path) {
-        if let Ok(entry) = result {
-            if entry.file_type().unwrap().is_file() {
-                let buf = entry.path().to_path_buf();
-                if filter.allow(buf) {
-                    origin_files.push(format!("{}", entry.path().display()))
-                }
+    for entry in Walk::new(path).flatten() {
+        if entry.file_type().unwrap().is_file() {
+            let buf = entry.path().to_path_buf();
+            if filter.allow(buf) {
+                origin_files.push(format!("{}", entry.path().display()))
             }
         }
     }
@@ -133,9 +130,9 @@ mod tests {
     use std::fs;
     use std::path::PathBuf;
 
-    use crate::{by_dir, ParseOption};
     use crate::file_filter::FileFilter;
     use crate::render::{MermaidRender, PlantUmlRender};
+    use crate::{by_dir, ParseOption};
 
     pub fn ctags_fixtures_dir() -> PathBuf {
         PathBuf::from(env!("CARGO_MANIFEST_DIR"))

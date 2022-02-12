@@ -21,7 +21,6 @@ use std::io::{BufRead, BufReader};
 use std::path::PathBuf;
 use std::str::Lines;
 
-
 #[derive(Default)]
 pub struct CtagsParser {
     pub(crate) option: ParseOption,
@@ -118,18 +117,14 @@ impl CtagsParser {
         let reader = BufReader::new(file);
 
         let mut parser = CtagsParser::default();
-        for result in reader.lines() {
-            if let Ok(line) = result {
-                parser.parse_class(line.as_str());
-            };
+        for line in reader.lines().flatten() {
+            parser.parse_class(line.as_str());
         }
 
         let file = File::open(format!("{}", dir.display()).as_str()).expect("cannot find file");
         let reader = BufReader::new(file);
-        for result in reader.lines() {
-            if let Ok(line) = result {
-                parser.parse_method_methods(line.as_str());
-            };
+        for line in reader.lines().flatten() {
+            parser.parse_method_methods(line.as_str());
         }
 
         parser
@@ -145,7 +140,7 @@ impl CtagsParser {
             if let Some(inherits_capts) = INHERITS_RE.captures(line) {
                 let inherits_str = &inherits_capts["inherits"];
                 let inherits = inherits_str
-                    .split(",")
+                    .split(',')
                     .map(|s| s.to_string())
                     .collect::<Vec<String>>();
 
@@ -247,7 +242,7 @@ impl CtagsParser {
 
     fn parse_rust_access(field_with_access: String) -> String {
         let split = field_with_access
-            .split(" ")
+            .split(' ')
             .map(|s| s.to_string())
             .collect::<Vec<String>>();
 
@@ -267,7 +262,7 @@ impl CtagsParser {
             line = line.replacen(keyword, "", 1)
         }
 
-        return line;
+        line
     }
 
     fn lookup_class_from_map(&mut self, line: &str) -> Option<&mut ClassInfo> {
@@ -340,7 +335,8 @@ impl CtagsParser {
                         Some(s.split(',').map(|s| s.to_string()).collect())
                     }
                 })
-            }).unwrap_or_default()
+            })
+            .unwrap_or_default()
     }
 }
 
@@ -350,7 +346,9 @@ mod test {
     use std::path::PathBuf;
 
     pub fn tags_dir() -> PathBuf {
-        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("_fixtures").join("ctags")
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("_fixtures")
+            .join("ctags")
     }
 
     #[test]
