@@ -1,6 +1,49 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### Documentation
+
+- Update README
+
+## [0.6.2] - 2022-03-15
+
+### Bug Fixes
+
+- Fix some lint for ctags parser for clippy
+- Fix lint for falttern items
+
+### Documentation
+
+- Add changelog
+- Update modeling readme
+- Update badge name
+- Init doxygen config
+- Update doxygen config
+- Update process with usage
+
+### Features
+
+- Add remove custom suffix support
+
+### Miscellaneous Tasks
+
+- Release 0.6.2
+
+### Refactor
+
+- Inline code
+
+### Styling
+
+- Fix import order
+
+### Lint
+
+- Auto fix
+- Fix some lints
+
 ## [0.6.1] - 2022-01-31
 
 ### Bug Fixes
