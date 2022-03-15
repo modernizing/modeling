@@ -32,7 +32,7 @@ language support:
  - visualing, visualization the uml.
 
 ```bash
-Modeling 0.6.1
+Modeling 0.6.2
 
 USAGE:
     modeling [FLAGS] [OPTIONS]
@@ -54,15 +54,13 @@ OPTIONS:
     -o, --output-type <output-type>    support: puml, mermaid, graphviz with json [default: puml]
     -p, --packages <packages>...       filter by packages, like: `com.phodal.modeling`
     -s, --suffixes <suffixes>...       filter by suffixes, like: `java` for .java file
+    --without-suffix-text <without-suffix-text>
+        remove specify suffix by text, for example `DemoDto` with be `Demo` [default: ]
 ```
-
-### sample: puml to Image
-
-convert to image: `plantuml modeling.puml modeling.svg -tsvg`
 
 ### sample: Grep with MVC
 
-```
+```bash
 modeling --input=/youpath/ --field-only --without-parent --grep ".*Service|.*Controller|.*Repository"
 ```
 
@@ -72,6 +70,19 @@ with `--output-type=graphviz`
 
 ```bash
 modeling --input=/youpath  --field-only -o graphviz --without-impl-suffix
+```
+
+### sample: puml to Image
+
+convert to image: `plantuml modeling.puml modeling.svg -tsvg`
+
+### with Visualization
+
+PS: need to set `--output-type graphviz`, in order to generate `output.json` file
+
+```bash
+modeling -i youpath -o graphviz
+visualing
 ```
 
 ## Library

@@ -48,7 +48,7 @@ struct Opts {
     /// if class's prop end with Id and class in list, will replace `int` type to `xxClass`
     #[structopt(long)]
     inline_id_suffix: bool,
-    // remove some specify suffix for Field and Class name by text, for example `DemoDto` with be `Demo`
+    /// remove specify suffix by text, for example `DemoDto` with be `Demo`
     #[structopt(long, default_value = "")]
     without_suffix_text: String
 }
