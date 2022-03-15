@@ -48,6 +48,9 @@ struct Opts {
     /// if class's prop end with Id and class in list, will replace `int` type to `xxClass`
     #[structopt(long)]
     inline_id_suffix: bool,
+    // remove some specify suffix for Field and Class name by text, for example `DemoDto` with be `Demo`
+    #[structopt(long, default_value = "")]
+    without_suffix_text: String
 }
 
 impl Opts {
@@ -58,6 +61,7 @@ impl Opts {
             without_parent: self.without_parent,
             without_impl_suffix: self.without_impl_suffix,
             inline_id_suffix: self.inline_id_suffix,
+            without_suffix_text: self.without_suffix_text.clone(),
         }
     }
 }

@@ -7,25 +7,38 @@ pub mod graphviz_render;
 pub mod mermaid_render;
 pub mod plantuml_render;
 
+pub fn process_name(parse_option: &&ParseOption, class_name: &str) -> String {
+    if !parse_option.without_suffix_text.is_empty() {
+        if let Some(text) = class_name.strip_suffix(&parse_option.without_suffix_text) {
+            return text.to_string();
+        }
+    }
+
+    class_name.to_string()
+}
+
 pub fn render_method(
     clazz: &ClassInfo,
     dep_map: &mut HashMap<String, String>,
     space: &str,
+    parse_option: &ParseOption,
 ) -> Vec<String> {
     let mut methods = vec![];
+    let clazz_name = process_name(&parse_option, &clazz.name);
     for method in &clazz.methods {
+        let method_name = process_name(&parse_option, &method.name);
         if method.return_type.is_empty() {
-            methods.push(format!("{}  {}{}()\n", space, method.access, method.name))
+            methods.push(format!("{}  {}{}()\n", space, method.access, method_name))
         } else {
             methods.push(format!(
                 "{}  {} {} {}()\n",
-                space, method.access, method.return_type, method.name
+                space, method.access, method.return_type, method_name
             ));
 
             if method.pure_return_type.len() > 0 {
-                dep_map.insert(method.pure_return_type.clone(), clazz.name.clone());
+                dep_map.insert(method.pure_return_type.clone(), clazz_name.clone());
             } else {
-                dep_map.insert(method.return_type.clone(), clazz.name.clone());
+                dep_map.insert(method.return_type.clone(), clazz_name.clone());
             }
         }
     }
@@ -39,10 +52,12 @@ pub fn render_member(
     parse_option: &ParseOption,
     class_map: &mut HashMap<String, bool>,
 ) -> Vec<String> {
+    let clazz_name = process_name(&parse_option, &clazz.name);
     let mut members = vec![];
     for member in &clazz.members {
+        let member_name = process_name(&parse_option, &member.name);
         if member.data_type.is_empty() {
-            members.push(format!("{}  {}{}\n", space, member.access, member.name))
+            members.push(format!("{}  {}{}\n", space, member.access, member_name))
         } else {
             let id = "Id";
             let mut data_type: &str = &member.data_type;
@@ -58,8 +73,8 @@ pub fn render_member(
 
             if parse_option.inline_id_suffix {
                 // - int UserId to be `User UserId`
-                if member.name.ends_with(id) && member.name.len() > id.len() {
-                    let member_name = &member.name[0..(member.name.len() - id.len())];
+                if member_name.ends_with(id) && member_name.len() > id.len() {
+                    let member_name = &member_name[0..(member_name.len() - id.len())];
                     if class_map.get(member_name).is_some() {
                         data_type = member_name;
                     }
@@ -68,13 +83,13 @@ pub fn render_member(
 
             members.push(format!(
                 "{}  {} {} {}\n",
-                space, member.access, data_type, member.name
+                space, member.access, data_type, member_name
             ));
 
             if member.pure_data_type.len() > 0 {
-                dep_map.insert(member.pure_data_type.clone(), clazz.name.clone());
+                dep_map.insert(member.pure_data_type.clone(), clazz_name.clone());
             } else {
-                dep_map.insert(data_type.to_string(), clazz.name.clone());
+                dep_map.insert(data_type.to_string(), clazz_name.clone());
             }
         }
     }
@@ -174,6 +189,27 @@ mod tests {
         classes.push(demo2);
 
         let str = PlantUmlRender::render(&classes, &ParseOption::default());
+        assert_eq!(true, str.contains("Demo -- Demo2"));
+        assert_eq!(false, str.contains("Demo -- String"));
+    }
+
+    #[test]
+    fn should_remove_suffix_text() {
+        let mut classes = vec![];
+        let mut demo = ClassInfo::new("DemoDto");
+        let demo2 = ClassInfo::new("Demo2Dto");
+
+        let mut method = MethodInfo::new("method", "-".to_string(), vec![], "[]Demo2".to_string());
+        method.pure_return_type = "Demo2".to_string();
+        demo.methods.push(method);
+
+        classes.push(demo);
+        classes.push(demo2);
+
+        let mut parse_option = ParseOption::default();
+        parse_option.without_suffix_text = "Dto".to_string();
+
+        let str = PlantUmlRender::render(&classes, &parse_option);
         assert_eq!(true, str.contains("Demo -- Demo2"));
         assert_eq!(false, str.contains("Demo -- String"));
     }

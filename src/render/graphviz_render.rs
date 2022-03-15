@@ -4,7 +4,7 @@ use std::fs;
 use serde::{Deserialize, Serialize};
 
 use crate::coco_struct::ClassInfo;
-use crate::render::{render_member, render_method};
+use crate::render::{process_name, render_member, render_method};
 use crate::ParseOption;
 
 /// Render classes info to string
@@ -39,7 +39,7 @@ impl GraphvizRender {
 
         let mut class_map: HashMap<String, bool> = HashMap::default();
         for clazz in classes {
-            class_map.insert(clazz.name.clone(), true);
+            class_map.insert(process_name(&parse_option, &clazz.name), true);
         }
 
         let class_catalog = Self::catalog_mvc_to_index();
@@ -54,11 +54,12 @@ impl GraphvizRender {
                 &class_catalog,
                 &layer_cluster,
                 &clazz,
+                &parse_option
             );
 
             let _ = render_member(&clazz, &mut dep_map, "", parse_option, &mut class_map);
             if !parse_option.field_only {
-                let _ = render_method(&clazz, &mut dep_map, "");
+                let _ = render_method(&clazz, &mut dep_map, "", parse_option);
             }
 
             for (callee, current_clz) in dep_map {
@@ -113,10 +114,11 @@ impl GraphvizRender {
         data: &mut DData,
         class_catalog: &HashMap<&str, usize>,
         layer_cluster: &HashMap<usize, &str>,
-        clazz: &&ClassInfo,
+        clazz: &ClassInfo,
+        parse_option: &ParseOption,
     ) {
         let mut has_catalog = false;
-        let class_name = &clazz.name;
+        let class_name = process_name(&parse_option, &clazz.name);
         for (key, value) in class_catalog {
             if class_name.ends_with(key) {
                 has_catalog = true;

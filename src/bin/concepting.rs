@@ -39,6 +39,7 @@ impl ConceptOpts {
             without_parent: false,
             without_impl_suffix: false,
             inline_id_suffix: false,
+            without_suffix_text: "".to_string()
         }
     }
 }

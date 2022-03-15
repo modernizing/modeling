@@ -7,4 +7,5 @@ pub struct ParseOption {
     pub without_parent: bool,
     pub without_impl_suffix: bool,
     pub inline_id_suffix: bool,
+    pub without_suffix_text: String,
 }
