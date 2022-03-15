@@ -9,9 +9,9 @@
 process:
 
 1. analysis `ctags`
-  - generate to opt
-  - call `ctags` with opt
-  - analysis `ctags` logs by regex
+   - generate to opt
+   - call `ctags` with opt
+   - analysis `ctags` logs by regex
 2. generate results
 3. visual result with `visualing` (optional)
 
