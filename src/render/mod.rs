@@ -60,33 +60,20 @@ pub fn render_member(
             members.push(format!("{}  {}{}\n", space, member.access, member_name))
         } else {
             let id = "Id";
-            let mut data_type: &str = &member.data_type;
+            let mut data_type = member.data_type.to_string();
             if parse_option.without_impl_suffix {
                 // ex. `IRepository` will check is R uppercase
                 if data_type.len() > id.len() && data_type.starts_with("I") {
                     let char = data_type.chars().nth(1).unwrap();
                     if char.to_uppercase().to_string() == char.to_string() {
-                        data_type = &data_type[1..data_type.len()];
+                        data_type = (&data_type[1..data_type.len()]).to_string();
                     }
                 }
             }
 
             if parse_option.inline_id_suffix {
-                let ids = "Ids";
-                // - int UserId to be `User UserId`
-                if member_name.ends_with(id) && member_name.len() > id.len() {
-                    let member_name = &member_name[0..(member_name.len() - id.len())];
-                    if class_map.get(member_name).is_some() {
-                        data_type = member_name;
-                    }
-                }
-
-                if member_name.ends_with(ids) && member_name.len() > ids.len() {
-                    let member_name = &member_name[0..(member_name.len() - ids.len())];
-                    if class_map.get(member_name).is_some() {
-                        data_type = member_name;
-                    }
-                }
+                data_type = remove_suffix_id(class_map, &member_name,  data_type, "Id");
+                data_type = remove_suffix_id(class_map, &member_name,  data_type, "Ids");
             }
 
             members.push(format!(
@@ -102,6 +89,17 @@ pub fn render_member(
         }
     }
     members
+}
+
+fn remove_suffix_id(class_map: &mut HashMap<String, bool>, member_name: &String, data_type: String, ids: &str) -> String {
+    if member_name.ends_with(ids) && member_name.len() > ids.len() {
+        let member_name = &member_name[0..(member_name.len() - ids.len())];
+        if class_map.get(member_name).is_some() {
+            return member_name.to_string()
+        }
+    }
+
+    return data_type
 }
 
 #[cfg(test)]
