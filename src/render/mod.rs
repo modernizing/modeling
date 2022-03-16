@@ -8,8 +8,8 @@ pub mod mermaid_render;
 pub mod plantuml_render;
 
 pub fn process_name(parse_option: &&ParseOption, class_name: &str) -> String {
-    if !parse_option.without_suffix_text.is_empty() {
-        if let Some(text) = class_name.strip_suffix(&parse_option.without_suffix_text) {
+    if !parse_option.without_suffix.is_empty() {
+        if let Some(text) = class_name.strip_suffix(&parse_option.without_suffix) {
             return text.to_string();
         }
     }
@@ -207,7 +207,7 @@ mod tests {
         classes.push(demo2);
 
         let mut parse_option = ParseOption::default();
-        parse_option.without_suffix_text = "Dto".to_string();
+        parse_option.without_suffix = "Dto".to_string();
 
         let str = PlantUmlRender::render(&classes, &parse_option);
         assert_eq!(true, str.contains("Demo -- Demo2"));

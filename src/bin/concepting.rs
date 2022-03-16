@@ -34,12 +34,12 @@ struct ConceptOpts {
 impl ConceptOpts {
     pub fn to_parse_option(&self) -> ParseOption {
         ParseOption {
-            merge: false,
+            merge_method_name: false,
             field_only: false,
             without_parent: false,
             without_impl_suffix: false,
             inline_id_suffix: false,
-            without_suffix_text: "".to_string()
+            without_suffix: "".to_string()
         }
     }
 }

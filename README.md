@@ -54,8 +54,7 @@ OPTIONS:
     -o, --output-type <output-type>    support: puml, mermaid, graphviz with json [default: puml]
     -p, --packages <packages>...       filter by packages, like: `com.phodal.modeling`
     -s, --suffixes <suffixes>...       filter by suffixes, like: `java` for .java file
-    --without-suffix-text <without-suffix-text>
-        remove specify suffix by text, for example `DemoDto` with be `Demo` [default: ]
+    --without-suffix <without-suffix>  remove specify suffix by text, for example `DemoDto` with be `Demo` [default: ]
 ```
 
 ### sample: Grep with MVC

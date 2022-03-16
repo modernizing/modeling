@@ -50,18 +50,18 @@ struct Opts {
     inline_id_suffix: bool,
     /// remove specify suffix by text, for example `DemoDto` with be `Demo`
     #[structopt(long, default_value = "")]
-    without_suffix_text: String
+    without_suffix: String
 }
 
 impl Opts {
     pub fn to_parse_option(&self) -> ParseOption {
         ParseOption {
-            merge: self.merge,
+            merge_method_name: self.merge,
             field_only: self.field_only,
             without_parent: self.without_parent,
             without_impl_suffix: self.without_impl_suffix,
             inline_id_suffix: self.inline_id_suffix,
-            without_suffix_text: self.without_suffix_text.clone(),
+            without_suffix: self.without_suffix.clone(),
         }
     }
 }

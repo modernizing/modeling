@@ -307,7 +307,7 @@ impl CtagsParser {
                 .members
                 .sort_by(|a, b| a.name.to_lowercase().cmp(&b.name.to_lowercase()));
 
-            if self.option.merge {
+            if self.option.merge_method_name {
                 clazz
                     .methods
                     .dedup_by(|a, b| a.name.eq_ignore_ascii_case(&*b.name));
@@ -526,7 +526,7 @@ MethodIdentifier	SubscriberRegistry.java	/^  private static final class MethodId
         assert_eq!(2, classes[0].methods.len());
 
         let mut option = ParseOption::default();
-        option.merge = true;
+        option.merge_method_name = true;
 
         let mut parser = CtagsParser::parse_str(lines);
         parser.option = option;
