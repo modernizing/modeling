@@ -72,9 +72,17 @@ pub fn render_member(
             }
 
             if parse_option.inline_id_suffix {
+                let ids = "Ids";
                 // - int UserId to be `User UserId`
                 if member_name.ends_with(id) && member_name.len() > id.len() {
                     let member_name = &member_name[0..(member_name.len() - id.len())];
+                    if class_map.get(member_name).is_some() {
+                        data_type = member_name;
+                    }
+                }
+
+                if member_name.ends_with(ids) && member_name.len() > ids.len() {
+                    let member_name = &member_name[0..(member_name.len() - ids.len())];
                     if class_map.get(member_name).is_some() {
                         data_type = member_name;
                     }
