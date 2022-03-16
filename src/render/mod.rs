@@ -7,14 +7,14 @@ pub mod graphviz_render;
 pub mod mermaid_render;
 pub mod plantuml_render;
 
-pub fn process_name(parse_option: &&ParseOption, class_name: &str) -> String {
+pub fn process_name(parse_option: &&ParseOption, name: &str) -> String {
     if !parse_option.without_suffix.is_empty() {
-        if let Some(text) = class_name.strip_suffix(&parse_option.without_suffix) {
+        if let Some(text) = name.strip_suffix(&parse_option.without_suffix) {
             return text.to_string();
         }
     }
 
-    class_name.to_string()
+    name.to_string()
 }
 
 pub fn render_method(
